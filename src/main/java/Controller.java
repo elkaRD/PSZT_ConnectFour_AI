@@ -28,6 +28,11 @@ public class Controller
         return mBoardLogic.getPlayerType(x, y);
     }
 
+    public ConnectFourLogic.Token getToken(int x, int y)
+    {
+        return mBoardLogic.getToken(x, y);
+    }
+
     public void run()
     {
         Scanner input = new Scanner(System.in);
