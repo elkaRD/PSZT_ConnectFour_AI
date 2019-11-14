@@ -43,16 +43,16 @@ public class Controller
             mRenderer.render();
 
             ConnectFourLogic.PlayerType curPlayer = mCurTurn ? ConnectFourLogic.PlayerType.PLAYER_A : ConnectFourLogic.PlayerType.PLAYER_B;
-            int selectedRow;
+            int selectedColumn;
 
             do
             {
                 if (curPlayer == ConnectFourLogic.PlayerType.PLAYER_A) System.out.println("PLAYER A: ");
                 else System.out.println("PLAYER B: ");
-                System.out.println("Select row to insert ");
-                selectedRow = input.nextInt();
+                System.out.println("Select column to insert ");
+                selectedColumn = input.nextInt();
             }
-            while (mBoardLogic.insertToken(selectedRow, ConnectFourLogic.PlayerType.PLAYER_A) != 0); //TODO: change it back after debugging
+            while (mBoardLogic.insertToken(selectedColumn, ConnectFourLogic.PlayerType.PLAYER_A) != 0); //TODO: change it back after debugging
 
             mCurTurn = !mCurTurn;
         }

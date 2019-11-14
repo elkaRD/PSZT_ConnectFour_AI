@@ -36,10 +36,15 @@ public class ConnectFourLogic
         int[] vertical = {0, 0};
         int[] diagonalUp = {0, 0};    //  /
         int[] diagonalDown = {0, 0};   //  \
+
+        int[] total = {0, 0};
+
+
+
     }
 
     Token[][] board;
-    int[] heightsOfRows;
+    int[] heightsOfColumns;
 
     public ConnectFourLogic(int width, int height)
     {
@@ -47,7 +52,7 @@ public class ConnectFourLogic
         HEIGHT = height;
 
         board = new Token[WIDTH][HEIGHT];
-        heightsOfRows = new int[WIDTH];
+        heightsOfColumns = new int[WIDTH];
 
         for (int i = 0; i < WIDTH; i++)
             for (int j =0; j < HEIGHT; j++)
@@ -56,15 +61,15 @@ public class ConnectFourLogic
         System.out.println("Launched");
     }
 
-    public int insertToken(int row, PlayerType playerType)
+    public int insertToken(int column, PlayerType playerType)
     {
-        if (heightsOfRows[row] == HEIGHT) return -1;
+        if (heightsOfColumns[column] == HEIGHT) return -1;
 
-        board[row][heightsOfRows[row]].player = playerType;
+        board[column][heightsOfColumns[column]].player = playerType;
 
-        checkHorizontal(row, heightsOfRows[row], playerType);
+        checkHorizontal(column, heightsOfColumns[column], playerType);
 
-        heightsOfRows[row]++;
+        heightsOfColumns[column]++;
 
         return 0;
     }
@@ -132,15 +137,21 @@ public class ConnectFourLogic
         {
             if (prev.player != PlayerType.EMPTY)
             {
-                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
-                next.horizontal[playerId] += 2;
-                prev.horizontal[playerId]++;
+//                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
+//                next.horizontal[playerId] += 2;
+//                prev.horizontal[playerId]++;
+                changeNeighbour(x, y,  -2, dir, 1, playerType);
+                changeNeighbour(x, y,   1, dir, 2, playerType);
+                changeNeighbour(x, y,  -1, dir, 1, playerType);
             }
             else
             {
-                if (x+2 < WIDTH) board[x+2][y].horizontal[playerId]++;
-                prev.horizontal[playerId] += 2;
-                next.horizontal[playerId]++;
+//                if (x+2 < WIDTH) board[x+2][y].horizontal[playerId]++;
+//                prev.horizontal[playerId] += 2;
+//                next.horizontal[playerId]++;
+                changeNeighbour(x, y,   2, dir, 1, playerType);
+                changeNeighbour(x, y,  -1, dir, 2, playerType);
+                changeNeighbour(x, y,   1, dir, 1, playerType);
             }
             return;
         }
@@ -149,24 +160,36 @@ public class ConnectFourLogic
         {
             if (prev.player != PlayerType.EMPTY && next.player != PlayerType.EMPTY)
             {
-                if (x-2 >= 0) board[x-2][y].horizontal[playerId] += 2;
-                prev.horizontal[playerId] += 2;
-                next.horizontal[playerId] += 2;
-                if (x+2 < WIDTH) board[x+2][y].horizontal[playerId] += 2;
+//                if (x-2 >= 0) board[x-2][y].horizontal[playerId] += 2;
+//                prev.horizontal[playerId] += 2;
+//                next.horizontal[playerId] += 2;
+//                if (x+2 < WIDTH) board[x+2][y].horizontal[playerId] += 2;
+                changeNeighbour(x, y,  -2, dir, 2, playerType);
+                changeNeighbour(x, y,  -1, dir, 2, playerType);
+                changeNeighbour(x, y,   1, dir, 2, playerType);
+                changeNeighbour(x, y,   2, dir, 2, playerType);
             }
             else if (prev.player != PlayerType.EMPTY)
             {
-                if (x-3 >= 0) board[x-3][y].horizontal[playerId]++;
-                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
-                prev.horizontal[playerId]++;
-                next.horizontal[playerId] += 3;
+//                if (x-3 >= 0) board[x-3][y].horizontal[playerId]++;
+//                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
+//                prev.horizontal[playerId]++;
+//                next.horizontal[playerId] += 3;
+                changeNeighbour(x, y,  -3, dir, 1, playerType);
+                changeNeighbour(x, y,  -2, dir, 1, playerType);
+                changeNeighbour(x, y,  -1, dir, 1, playerType);
+                changeNeighbour(x, y,   1, dir, 3, playerType);
             }
             else
             {
-                if (x+3 >= 0) board[x+3][y].horizontal[playerId]++;
-                if (x+2 >= 0) board[x+2][y].horizontal[playerId]++;
-                next.horizontal[playerId]++;
-                prev.horizontal[playerId] += 3;
+//                if (x+3 >= 0) board[x+3][y].horizontal[playerId]++;
+//                if (x+2 >= 0) board[x+2][y].horizontal[playerId]++;
+//                next.horizontal[playerId]++;
+//                prev.horizontal[playerId] += 3;
+                changeNeighbour(x, y,   3, dir, 1, playerType);
+                changeNeighbour(x, y,   2, dir, 1, playerType);
+                changeNeighbour(x, y,   1, dir, 1, playerType);
+                changeNeighbour(x, y,  -1, dir, 3, playerType);
             }
         }
     }
@@ -224,5 +247,92 @@ public class ConnectFourLogic
     private int getPlayerTypeId(PlayerType playerType)
     {
         return playerType == PlayerType.PLAYER_A ? 0 : 1;
+    }
+
+    private void checkDirection(int x, int y, Direction dir, PlayerType playerType)
+    {
+        Token prev = (x-1) >= 0    ? board[x-1][y] : null;
+        Token next = (x+1) < WIDTH ? board[x+1][y] : null;
+
+        int playerId = getPlayerTypeId(playerType);
+        //Direction dir = Direction.HORIZONTAL;
+
+        board[x][y].horizontal[playerId]++;
+
+        if (board[x][y].horizontal[playerId] == 1)
+        {
+//            prev.horizontal[playerId]++;
+//            next.horizontal[playerId]++;
+            changeNeighbour(x, y, -1, dir, 1, playerType);
+            changeNeighbour(x, y,  1, dir, 1, playerType);
+            return;
+        }
+
+        if (board[x][y].horizontal[playerId] >= 4)
+        {
+            gameOver = true;
+            //winner
+            return;
+        }
+
+        if (board[x][y].horizontal[playerId] == 2)
+        {
+            if (prev.player != PlayerType.EMPTY)
+            {
+//                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
+//                next.horizontal[playerId] += 2;
+//                prev.horizontal[playerId]++;
+                changeNeighbour(x, y,  -2, dir, 1, playerType);
+                changeNeighbour(x, y,   1, dir, 2, playerType);
+                changeNeighbour(x, y,  -1, dir, 1, playerType);
+            }
+            else
+            {
+//                if (x+2 < WIDTH) board[x+2][y].horizontal[playerId]++;
+//                prev.horizontal[playerId] += 2;
+//                next.horizontal[playerId]++;
+                changeNeighbour(x, y,   2, dir, 1, playerType);
+                changeNeighbour(x, y,  -1, dir, 2, playerType);
+                changeNeighbour(x, y,   1, dir, 1, playerType);
+            }
+            return;
+        }
+
+        if (board[x][y].horizontal[playerId] == 3)
+        {
+            if (prev.player != PlayerType.EMPTY && next.player != PlayerType.EMPTY)
+            {
+//                if (x-2 >= 0) board[x-2][y].horizontal[playerId] += 2;
+//                prev.horizontal[playerId] += 2;
+//                next.horizontal[playerId] += 2;
+//                if (x+2 < WIDTH) board[x+2][y].horizontal[playerId] += 2;
+                changeNeighbour(x, y,  -2, dir, 2, playerType);
+                changeNeighbour(x, y,  -1, dir, 2, playerType);
+                changeNeighbour(x, y,   1, dir, 2, playerType);
+                changeNeighbour(x, y,   2, dir, 2, playerType);
+            }
+            else if (prev.player != PlayerType.EMPTY)
+            {
+//                if (x-3 >= 0) board[x-3][y].horizontal[playerId]++;
+//                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
+//                prev.horizontal[playerId]++;
+//                next.horizontal[playerId] += 3;
+                changeNeighbour(x, y,  -3, dir, 1, playerType);
+                changeNeighbour(x, y,  -2, dir, 1, playerType);
+                changeNeighbour(x, y,  -1, dir, 1, playerType);
+                changeNeighbour(x, y,   1, dir, 3, playerType);
+            }
+            else
+            {
+//                if (x+3 >= 0) board[x+3][y].horizontal[playerId]++;
+//                if (x+2 >= 0) board[x+2][y].horizontal[playerId]++;
+//                next.horizontal[playerId]++;
+//                prev.horizontal[playerId] += 3;
+                changeNeighbour(x, y,   3, dir, 1, playerType);
+                changeNeighbour(x, y,   2, dir, 1, playerType);
+                changeNeighbour(x, y,   1, dir, 1, playerType);
+                changeNeighbour(x, y,  -1, dir, 3, playerType);
+            }
+        }
     }
 }
