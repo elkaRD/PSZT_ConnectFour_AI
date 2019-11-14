@@ -61,13 +61,17 @@ public class Renderer
                 switch(player)
                 {
                     case EMPTY:
-                        System.out.print(" " + token.horizontal[0]);
+//                        System.out.print(" " + token.getDir(HO));
+                        System.out.print(" " + token.getTotal(ConnectFourLogic.PlayerType.PLAYER_A));
                         break;
                     case PLAYER_A:
-                        System.out.print("_" + token.horizontal[0]);
+//                        System.out.print(" " + token.getDir(ConnectFourLogic.Direction.HORIZONTAL, ConnectFourLogic.PlayerType.PLAYER_A));
+//                        System.out.print(" " + token.getTotal(ConnectFourLogic.PlayerType.PLAYER_A));
+                        System.out.print("  ");
                         break;
                     case PLAYER_B:
-                        System.out.print("_" + token.horizontal[0]);
+//                        System.out.print("_" + token.horizontal[0]);
+                        System.out.print("  ");
                         break;
                 }
             }
