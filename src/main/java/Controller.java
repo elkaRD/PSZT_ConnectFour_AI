@@ -52,7 +52,7 @@ public class Controller
                 System.out.println("Select row to insert ");
                 selectedRow = input.nextInt();
             }
-            while (mBoardLogic.insertToken(selectedRow, curPlayer) != 0);
+            while (mBoardLogic.insertToken(selectedRow, ConnectFourLogic.PlayerType.PLAYER_A) != 0); //TODO: change it back after debugging
 
             mCurTurn = !mCurTurn;
         }
