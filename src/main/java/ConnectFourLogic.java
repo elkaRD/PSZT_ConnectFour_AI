@@ -32,10 +32,10 @@ public class ConnectFourLogic
 
         PlayerType player;
 
-        int horizontal = 0;
-        int vertical = 0;
-        int diagonalUp = 0;     //  /
-        int diagonalDown = 0;   //  \
+        int[] horizontal = {0, 0};
+        int[] vertical = {0, 0};
+        int[] diagonalUp = {0, 0};    //  /
+        int[] diagonalDown = {0, 0};   //  \
     }
 
     Token[][] board;
@@ -62,7 +62,7 @@ public class ConnectFourLogic
 
         board[row][heightsOfRows[row]].player = playerType;
 
-        checkHorizontal(row, heightsOfRows[row]);
+        checkHorizontal(row, heightsOfRows[row], playerType);
 
         heightsOfRows[row]++;
 
@@ -89,80 +89,82 @@ public class ConnectFourLogic
         int HighY = y + 1;
     }
 
-    private void markToken(int x, int y, Direction dir)
-    {
-        if (x < 0 || x >= WIDTH || y <0 || y >= HEIGHT) return;
+//    private void markToken(int x, int y, Direction dir)
+//    {
+//        if (x < 0 || x >= WIDTH || y <0 || y >= HEIGHT) return;
+//
+//        //if (board[x][y] == null) board[x][y] = new Token(EMPTY);
+//
+//        switch(dir)
+//        {
+//            case HORIZONTAL:
+//                board[x][y].horizontal++;
+//        }
+//    }
 
-        //if (board[x][y] == null) board[x][y] = new Token(EMPTY);
-
-        switch(dir)
-        {
-            case HORIZONTAL:
-                board[x][y].horizontal++;
-        }
-    }
-
-    private void checkHorizontal(int x, int y)
+    private void checkHorizontal(int x, int y, PlayerType playerType)
     {
         Token prev = (x-1) >= 0    ? board[x-1][y] : null;
         Token next = (x+1) < WIDTH ? board[x+1][y] : null;
+        
+        int playerId = getPlayerTypeId(playerType);
 
-        if (board[x][y].horizontal == 0)
+        if (board[x][y].horizontal[playerId] == 0)
         {
-            board[x][y].horizontal++;
-            prev.horizontal++;
-            next.horizontal++;
+            board[x][y].horizontal[playerId]++;
+            prev.horizontal[playerId]++;
+            next.horizontal[playerId]++;
             return;
         }
 
-        if (board[x][y].horizontal >= 3)
+        if (board[x][y].horizontal[playerId] >= 3)
         {
             gameOver = true;
             //winner
             return;
         }
 
-        if (board[x][y].horizontal == 1)
+        if (board[x][y].horizontal[playerId] == 1)
         {
-            board[x][y].horizontal++;
+            board[x][y].horizontal[playerId]++;
             if (prev.player != PlayerType.EMPTY)
             {
-                if (x-2 >= 0) board[x-2][y].horizontal++;
-                next.horizontal += 2;
-                prev.horizontal++;
+                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
+                next.horizontal[playerId] += 2;
+                prev.horizontal[playerId]++;
             }
             else
             {
-                if (x+2 < WIDTH) board[x+2][y].horizontal++;
-                prev.horizontal += 2;
-                next.horizontal++;
+                if (x+2 < WIDTH) board[x+2][y].horizontal[playerId]++;
+                prev.horizontal[playerId] += 2;
+                next.horizontal[playerId]++;
             }
             return;
         }
 
-        if (board[x][y].horizontal == 2)
+        if (board[x][y].horizontal[playerId] == 2)
         {
-            board[x][y].horizontal++;
+            board[x][y].horizontal[playerId]++;
             if (prev.player != PlayerType.EMPTY && next.player != PlayerType.EMPTY)
             {
-                if (x-2 >= 0) board[x-2][y].horizontal++;
-                prev.horizontal++;
-                next.horizontal++;
-                if (x+2 < WIDTH) board[x+2][y].horizontal++;
+                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
+                prev.horizontal[playerId]++;
+                next.horizontal[playerId]++;
+                if (x+2 < WIDTH) board[x+2][y].horizontal[playerId]++;
             }
             else if (prev.player != PlayerType.EMPTY)
             {
-                if (x-3 >= 0) board[x-3][y].horizontal++;
-                if (x-2 >= 0) board[x-2][y].horizontal++;
-                prev.horizontal++;
-                next.horizontal += 3;
+                if (x-3 >= 0) board[x-3][y].horizontal[playerId]++;
+                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
+                prev.horizontal[playerId]++;
+                next.horizontal[playerId] += 3;
             }
             else
             {
-                if (x+3 >= 0) board[x+3][y].horizontal++;
-                if (x+2 >= 0) board[x+2][y].horizontal++;
-                next.horizontal++;
-                prev.horizontal += 3;
+                if (x+3 >= 0) board[x+3][y].horizontal[playerId]++;
+                if (x+2 >= 0) board[x+2][y].horizontal[playerId]++;
+                next.horizontal[playerId]++;
+                prev.horizontal[playerId] += 3;
             }
         }
     }
@@ -192,24 +194,97 @@ public class ConnectFourLogic
         return board[x][y];
     }
 
-    private void changeNeighbour(int x, int y, int dst, Direction dir, int val)
+    private void changeNeighbour(int x, int y, int dst, Direction dir, int val, PlayerType playerType)
     {
         Token token = getNeighbour(x, y, dst, dir);
+        int playerId = getPlayerTypeId(playerType);
 
         switch (dir)
         {
             case HORIZONTAL:
-                token.horizontal += val;
+                token.horizontal[playerId] += val;
                 break;
             case VERTICAL:
-                token.vertical += val;
+                token.vertical[playerId]  += val;
                 break;
             case DIAGONAL_UP:
-                token.diagonalUp += val;
+                token.diagonalUp[playerId]  += val;
                 break;
             case DIAGONAL_DOWN:
-                token.diagonalDown += val;
+                token.diagonalDown[playerId]  += val;
                 break;
+        }
+    }
+    
+    private int getPlayerTypeId(PlayerType playerType)
+    {
+        return playerType == PlayerType.PLAYER_A ? 0 : 1;
+    }
+
+    private void checkDirection(int x, int y, Direction dir, PlayerType playerType)
+    {
+        Token prev = (x-1) >= 0    ? board[x-1][y] : null;
+        Token next = (x+1) < WIDTH ? board[x+1][y] : null;
+
+        int playerId = getPlayerTypeId(playerType);
+
+        if (board[x][y].horizontal[playerId] == 0)
+        {
+            board[x][y].horizontal[playerId]++;
+            prev.horizontal[playerId]++;
+            next.horizontal[playerId]++;
+            return;
+        }
+
+        if (board[x][y].horizontal[playerId] >= 3)
+        {
+            gameOver = true;
+            //winner
+            return;
+        }
+
+        if (board[x][y].horizontal[playerId] == 1)
+        {
+            board[x][y].horizontal[playerId]++;
+            if (prev.player != PlayerType.EMPTY)
+            {
+                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
+                next.horizontal[playerId] += 2;
+                prev.horizontal[playerId]++;
+            }
+            else
+            {
+                if (x+2 < WIDTH) board[x+2][y].horizontal[playerId]++;
+                prev.horizontal[playerId] += 2;
+                next.horizontal[playerId]++;
+            }
+            return;
+        }
+
+        if (board[x][y].horizontal[playerId] == 2)
+        {
+            board[x][y].horizontal[playerId]++;
+            if (prev.player != PlayerType.EMPTY && next.player != PlayerType.EMPTY)
+            {
+                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
+                prev.horizontal[playerId]++;
+                next.horizontal[playerId]++;
+                if (x+2 < WIDTH) board[x+2][y].horizontal[playerId]++;
+            }
+            else if (prev.player != PlayerType.EMPTY)
+            {
+                if (x-3 >= 0) board[x-3][y].horizontal[playerId]++;
+                if (x-2 >= 0) board[x-2][y].horizontal[playerId]++;
+                prev.horizontal[playerId]++;
+                next.horizontal[playerId] += 3;
+            }
+            else
+            {
+                if (x+3 >= 0) board[x+3][y].horizontal[playerId]++;
+                if (x+2 >= 0) board[x+2][y].horizontal[playerId]++;
+                next.horizontal[playerId]++;
+                prev.horizontal[playerId] += 3;
+            }
         }
     }
 }

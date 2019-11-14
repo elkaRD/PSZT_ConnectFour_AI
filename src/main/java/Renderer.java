@@ -61,13 +61,13 @@ public class Renderer
                 switch(player)
                 {
                     case EMPTY:
-                        System.out.print(" " + token.horizontal);
+                        System.out.print(" " + token.horizontal[0]);
                         break;
                     case PLAYER_A:
-                        System.out.print("_" + token.horizontal);
+                        System.out.print("_" + token.horizontal[0]);
                         break;
                     case PLAYER_B:
-                        System.out.print("_" + token.horizontal);
+                        System.out.print("_" + token.horizontal[0]);
                         break;
                 }
             }
