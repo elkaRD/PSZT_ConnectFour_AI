@@ -1,5 +1,3 @@
-import sun.management.snmp.jvmmib.EnumJvmMemPoolType;
-
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 

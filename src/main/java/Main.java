@@ -5,6 +5,8 @@ public class Main
         System.out.println("PSZT");
 
         Controller game = new Controller(12, 8, true);
-        game.run();
+        //game.run();
+
+        MinMax x = new MinMax();
     }
 }
