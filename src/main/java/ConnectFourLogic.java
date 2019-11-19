@@ -9,6 +9,35 @@ public class ConnectFourLogic
     private boolean gameOver = false;
     private PlayerType winner = PlayerType.EMPTY;
 
+    Token[][] board;
+    int[] heightsOfColumns;
+
+    public ConnectFourLogic makeCopy()
+    {
+        ConnectFourLogic temp = new ConnectFourLogic(WIDTH, HEIGHT);
+        temp.gameOver = gameOver;
+        temp.winner = winner;
+        //temp.board = board.clone();
+        temp.heightsOfColumns = heightsOfColumns.clone();
+        //temp.board = board.clone();
+//        for (int i = 0; i < temp.board.length; i++)
+//        {
+//            temp.board[i] = temp.board[i].makeCopy();
+//
+//        }
+        temp.board = new Token[WIDTH][HEIGHT];
+//        temp.heightsOfColumns = new int[WIDTH];
+
+        for (int i = 0; i < WIDTH; i++)
+            for (int j = 0; j < HEIGHT; j++)
+                temp.board[i][j] = board[i][j].makeCopy();
+
+        for (int i = 0; i < WIDTH; i++)
+            temp.heightsOfColumns[i] = heightsOfColumns[i];
+
+        return temp;
+    }
+
     public enum PlayerType
     {
         EMPTY,
@@ -60,10 +89,19 @@ public class ConnectFourLogic
         {
             return total[getPlayerTypeId(player)];
         }
-    }
 
-    Token[][] board;
-    int[] heightsOfColumns;
+        public Token makeCopy()
+        {
+            Token temp = new Token(player);
+            //temp.directions = directions.clone();
+            temp.directions = new int [4][2];
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 2; j++)
+                    temp.directions[i][j] = directions[i][j];
+            temp.total = total.clone();
+            return temp;
+        }
+    }
 
     public ConnectFourLogic(int width, int height)
     {
@@ -76,6 +114,30 @@ public class ConnectFourLogic
         for (int i = 0; i < WIDTH; i++)
             for (int j =0; j < HEIGHT; j++)
                 board[i][j] = new Token(PlayerType.EMPTY);
+    }
+
+    public boolean checkSpaceForToken(int column)
+    {
+        return heightsOfColumns[column] != HEIGHT;
+    }
+
+    public int getRatingForPlayer(PlayerType playerType)
+    {
+        int playerId = getPlayerTypeId(playerType);
+
+        int result = 0;
+
+        for (int x = 0; x < WIDTH; x++)
+        {
+            for (int y = 0; y < HEIGHT; y++)
+            {
+                if (board[x][y].total[playerId] == 3) return 10000;
+                if (board[x][y].total[playerId] == 2) result += 100;
+                if (board[x][y].total[playerId] == 1) result += 10;
+            }
+        }
+
+        return result;
     }
 
     public int insertToken(int column, PlayerType playerType)
@@ -238,5 +300,74 @@ public class ConnectFourLogic
                 changeNeighbour(x, y,  -1, dir, 3, playerType);
             }
         }
+    }
+
+    public void debugDisplay()
+    {
+        debugPrintTokenHorizontal();
+
+        for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
+
+        System.out.println("");
+
+        for (int i = 0; i < HEIGHT; i++)
+        {
+            System.out.print("|");
+            for (int j = 0; j < WIDTH; j++)
+            {
+                ConnectFourLogic.PlayerType player = getPlayerType(j, HEIGHT - i - 1);
+                switch(player)
+                {
+                    case EMPTY:
+                        System.out.print(" .");
+                        break;
+                    case PLAYER_A:
+                        System.out.print(" X");
+                        break;
+                    case PLAYER_B:
+                        System.out.print(" O");
+                        break;
+                }
+            }
+            System.out.println(" |");
+        }
+        for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
+        System.out.println("");
+    }
+
+    private void debugPrintTokenHorizontal()
+    {
+        for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
+
+        System.out.println("");
+
+        for (int i = 0; i < HEIGHT; i++)
+        {
+            System.out.print("#");
+            for (int j = 0; j < WIDTH; j++)
+            {
+                ConnectFourLogic.PlayerType player = getPlayerType(j, HEIGHT - i - 1);
+                ConnectFourLogic.Token token = getToken(j, HEIGHT - i - 1);
+                switch(player)
+                {
+                    case EMPTY:
+//                        System.out.print(" " + token.getDir(HO));
+                        System.out.print(" " + token.getTotal(ConnectFourLogic.PlayerType.PLAYER_B));
+                        break;
+                    case PLAYER_A:
+//                        System.out.print(" " + token.getDir(ConnectFourLogic.Direction.HORIZONTAL, ConnectFourLogic.PlayerType.PLAYER_A));
+//                        System.out.print(" " + token.getTotal(ConnectFourLogic.PlayerType.PLAYER_A));
+                        System.out.print("  ");
+                        break;
+                    case PLAYER_B:
+//                        System.out.print("_" + token.horizontal[0]);
+                        System.out.print("  ");
+                        break;
+                }
+            }
+            System.out.println(" #");
+        }
+        for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
+        System.out.println("");
     }
 }
