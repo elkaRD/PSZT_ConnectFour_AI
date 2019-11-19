@@ -66,19 +66,21 @@ public class MinMax
         rr.children.add(rrl);
         rr.children.add(rrr);
 
-        lll.value = 5;
-        llr.value = 2;
+        lll.value = 3;
+        llr.value = 5;
         lrl.value = 6;
-        lrr.value = 10;
+        lrr.value = 9;
 
-        rll.value = 7;
-        rlr.value = 8;
-        rrl.value = 9;
-        rrr.value = 12;
+        rll.value = 1;
+        rlr.value = 2;
+        rrl.value = 0;
+        rrr.value = -1;
 
         Node temp = getNextNode2(root, true);
+        Node temp2 = getNextNodeAlphaBeta(root, true, -1000, 1000);
 
         System.out.println("GOT VALUE FROM MIN-MAX: " + temp.value);
+        System.out.println("GOT VALUE FROM ALPHA_BETA: " + temp2.value);
     }
 
 //    public Node getNextNode(Node node, boolean isMax)
@@ -99,6 +101,53 @@ public class MinMax
 //
 //        return bestNode;
 //    }
+
+    public Node getNextNodeAlphaBeta(Node node, boolean isMax, int alpha, int beta)
+    {
+        if (node.children.size() == 0) return node;
+
+        Node bestNode = node.children.get(0);
+        getNextNodeAlphaBeta(bestNode, !isMax, alpha, beta);
+
+        if (isMax)
+            alpha = Math.max(alpha, bestNode.value);
+        else
+            beta = Math.min(beta, bestNode.value);
+
+        System.out.println("DEBUG " + node.children.get(0).value + ": " + alpha + ", " + beta);
+
+        if (alpha < beta)
+        for (int i = 1; i < node.children.size(); i++)
+        {
+            getNextNodeAlphaBeta(node.children.get(i), !isMax, alpha, beta);
+            if (isMax && node.children.get(i).value > bestNode.value)
+            {
+                bestNode = node.children.get(i);
+            }
+            else if (!isMax && node.children.get(i).value < bestNode.value)
+            {
+                bestNode = node.children.get(i);
+            }
+
+            if (isMax)
+                alpha = Math.max(alpha, bestNode.value);
+            else
+                beta = Math.min(beta, bestNode.value);
+
+            System.out.println("DEBUG " + node.children.get(i).value + ": " + alpha + ", " + beta);
+
+            if (alpha >= beta)
+            {
+                System.out.println("ALPHA > BETA");
+                break;
+            }
+        }
+        else
+            System.out.println("2ALPHA > BETA");
+
+        node.value = bestNode.value;
+        return bestNode;
+    }
 
     public Node getNextNode2(Node node, boolean isMax)
     {
