@@ -7,6 +7,6 @@ public class Main
         Controller game = new Controller(12, 8, true);
         //game.run();
 
-        MinMax x = new MinMax(5);
+        MinMax x = new MinMax(5, true);
     }
 }

@@ -6,6 +6,8 @@ import java.util.Queue;
 
 public class MinMax
 {
+    public static final int INFINITY = 1000000000;
+
     public class Node
     {
         public Node() //REMOVE IT
@@ -25,6 +27,8 @@ public class MinMax
             board.debugDisplay();
 
             if (!playerType) value *= -1;
+
+            this.move = move;
         }
 
         public Node(int value)
@@ -44,13 +48,8 @@ public class MinMax
         public int move;
     }
 
-    Queue<Node> q = new LinkedList<Node>();
-
     public void displayCurTree()
     {
-//        q.clear();
-//        displayCurTree(root);
-
         for (int i = 0; i < 3; i++)
         {
             System.out.println("LAYER " + i);
@@ -58,11 +57,6 @@ public class MinMax
             displayLayer(root, i);
             System.out.println(" ");
         }
-    }
-
-    public void displayCurTree(Node node)
-    {
-
     }
 
     public void displayLayer(Node node, int layer)
@@ -83,16 +77,20 @@ public class MinMax
 
     public final int WIDTH;
 
-    public MinMax(int width)
+    private boolean opponentTurn;
+    private boolean lastMove;
+
+    public MinMax(int width, boolean opponentTurn)
     {
         WIDTH = width;
+        this.opponentTurn = opponentTurn;
 
         root = new Node();
         root.board = new ConnectFourLogic(WIDTH, 8);
-//        addAllMoves(root, true);
-//        addAllMoves(root, false);
-
-        addAllMoves(root, true);
+        addAllMoves(root, opponentTurn);
+        addAllMoves();
+        addAllMoves();
+        addAllMoves();
 
         displayCurTree();
 
@@ -160,8 +158,16 @@ public class MinMax
 //        System.out.println("GOT VALUE FROM ALPHA_BETA: " + temp2.value);
     }
 
+    public void addAllMoves()
+    {
+        addAllMoves(root, lastMove);
+        lastMove = !lastMove;
+    }
+
     public void addAllMoves(Node node, boolean isMax)
     {
+        lastMove = isMax;
+
         if (node.children.size() == 0)
         {
             for (int i = 0; i < WIDTH; i++)
@@ -180,45 +186,54 @@ public class MinMax
         }
     }
 
-    public void addAllMoves()
+    public void makeOpponentMove(int column)
     {
-        for (int i = 0; i < WIDTH; i++)
-            addMove(root, i);
-    }
-
-    public void addMove(Node node, int move)
-    {
-        if (node.children.size() == 0)
+        if (!opponentTurn)
         {
-
-
+            System.out.println("Can't make a opponent move! Now it's AI's turn");
             return;
         }
 
-        for (Node child : node.children)
+        //Node bestMove = getNextNodeAlphaBeta(root, false);
+
+//        Node opponentMove = null;
+
+        for (Node child : root.children)
         {
-            addMove(child, move);
+            if (child.move == column)
+            {
+                root = child;
+                return;
+            }
         }
+
+        addAllMoves();
+        addAllMoves();
+
+        opponentTurn = false;
     }
 
-//    public Node getNextNode(Node node, boolean isMax)
-//    {
-//        Node bestNode = node.children.get(0);
-//
-//        for (int i = 1; i < node.children.size(); i++)
-//        {
-//            if (isMax && node.children.get(i).value > bestNode.value)
-//            {
-//                bestNode = node.children.get(i);
-//            }
-//            else if (!isMax && node.children.get(i).value < bestNode.value)
-//            {
-//                bestNode = node.children.get(i);
-//            }
-//        }
-//
-//        return bestNode;
-//    }
+    public int getAIMove()
+    {
+        if (opponentTurn)
+        {
+            System.out.println("It's apponent's tuen");
+            return -1;
+        }
+
+        Node bestMoveNode = getNextNodeAlphaBeta(root, true);
+        int bestMove = bestMoveNode.move;
+        root = bestMoveNode;
+
+        opponentTurn = true;
+
+        return bestMove;
+    }
+
+    public Node getNextNodeAlphaBeta(Node node, boolean isMax)
+    {
+        return getNextNodeAlphaBeta(node, isMax, -INFINITY, INFINITY);
+    }
 
     public Node getNextNodeAlphaBeta(Node node, boolean isMax, int alpha, int beta)
     {
@@ -261,6 +276,7 @@ public class MinMax
         return bestNode;
     }
 
+    //first version of min-max; not used anymore
     public Node getNextNode2(Node node, boolean isMax)
     {
         if (node.children.size() == 0) return node;
