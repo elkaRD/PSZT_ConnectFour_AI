@@ -65,6 +65,12 @@ public class GameBoard
 
         board[x][y].player = playerType;
 
+        if (checkGameOver(x, y, playerType))
+        {
+            gameOver = true;
+            winner = playerType;
+        }
+
         return 0;
     }
 
@@ -201,6 +207,42 @@ public class GameBoard
         }
 
         return VALUE[foundCounter] + VALUE_NEAR[foundNear];
+    }
+
+    private boolean checkGameOver(int x, int y, PlayerType player)
+    {
+        if (checkGameOverForDirection(x, y, player, Direction.HORIZONTAL)) return true;
+        if (checkGameOverForDirection(x, y, player, Direction.VERTICAL)) return true;
+        if (checkGameOverForDirection(x, y, player, Direction.DIAGONAL_DOWN)) return true;
+        if (checkGameOverForDirection(x, y, player, Direction.DIAGONAL_UP)) return true;
+
+        return false;
+    }
+
+    private boolean checkGameOverForDirection(int x, int y, PlayerType player, Direction dir)
+    {
+        int foundNear = 0;
+
+        for (int i = 1; i < 4; i++)
+        {
+            int hx = getX(x, i, dir);
+            int hy = getY(y, i, dir);
+            if (hx < 0 || hx >= WIDTH || hy < 0 || hy >= HEIGHT) continue;
+
+            if (board[hx][hy].player == player) foundNear++;
+            else break;
+        }
+
+        for (int i = -1; i > -4; i--)
+        {
+            int hx = getX(x, i, dir);
+            int hy = getY(y, i, dir);
+            if (hx < 0 || hx >= WIDTH || hy < 0 || hy >= HEIGHT) continue;
+
+            if (board[hx][hy].player == player) foundNear++;
+            else break;
+        }
+        return foundNear >= 3;
     }
 
     public void debugDisplay()

@@ -54,6 +54,8 @@ public class AIEngine
         addAllMoves();
         addAllMoves();
         addAllMoves();
+        addAllMoves();
+        addAllMoves();
     }
 
     public Node getNextNodeAlphaBeta(Node node, boolean isMax, int alpha, int beta)
@@ -101,7 +103,7 @@ public class AIEngine
 
     public void addAllMoves(Node node)
     {
-        //if (node.isTerminal) return;
+        if (node.isTerminal) return;
 
         if (node.children.size() == 0)
         {
@@ -143,7 +145,7 @@ public class AIEngine
 
     public int getAiMove()
     {
-        displayCurTree();
+        //displayCurTree();
 
         Node bestMove = getNextNodeAlphaBeta(root, true, -INFINITY, INFINITY);
         root = bestMove;

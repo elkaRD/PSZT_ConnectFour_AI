@@ -80,6 +80,13 @@ public class Controller
             }
             while (mBoardLogic.insertToken(selectedColumn, curPlayer) != 0);
 
+            if (gameBoard.getGameOver())
+            {
+                String winner = mCurTurn ? "PLAYER A" : "PLAYER B";
+                System.out.println("GAMEOVER: " + winner + " wins");
+                break;
+            }
+
             mCurTurn = !mCurTurn;
         }
     }
