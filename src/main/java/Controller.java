@@ -40,7 +40,8 @@ public class Controller
     public void run() throws Exception
     {
         Scanner input = new Scanner(System.in);
-        MinMax aiEngine = new MinMax(WIDTH, true);
+        //MinMax aiEngine = new MinMax(WIDTH, true);
+        AIEngine aiEngine = new AIEngine(WIDTH, HEIGHT);
 
         while (true)
         {
@@ -59,11 +60,13 @@ public class Controller
                 {
                     System.out.println("Select column to insert ");
                     selectedColumn = input.nextInt();
-                    aiEngine.makeOpponentMove(selectedColumn);
+                    //aiEngine.makeOpponentMove(selectedColumn);
+                    aiEngine.opponentMove(selectedColumn);
                 }
                 else
                 {
-                    selectedColumn = aiEngine.getAIMove();
+                    //selectedColumn = aiEngine.getAIMove();
+                    selectedColumn = aiEngine.getAiMove();
 
                     if (selectedColumn < 0 || selectedColumn >= WIDTH)
                     {

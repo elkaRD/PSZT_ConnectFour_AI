@@ -108,9 +108,11 @@ public class GameBoard
     private final static int[] VALUE = {0, 1, 5, 10, 50, 100000, 100000};
     private final static int[] VALUE_NEAR = {0, 2, 10, 100000, 100000, 100000, 100000};
 
-    public int getRating(int column, PlayerType player, boolean isOpponent)
+    public int getRating(int column, PlayerType player)
     {
         if (heightsOfColumns[column] == HEIGHT) return 0;
+
+        PlayerType opponent = player == PlayerType.PLAYER_A ? PlayerType.PLAYER_B : PlayerType.PLAYER_A;
 
         int x = column;
         int y = heightsOfColumns[column];
@@ -124,6 +126,11 @@ public class GameBoard
         result += getRatingForDirection(x, y, player, Direction.VERTICAL);
         result += getRatingForDirection(x, y, player, Direction.DIAGONAL_UP);
         result += getRatingForDirection(x, y, player, Direction.DIAGONAL_DOWN);
+
+        result -= getRatingForDirection(x, y, opponent, Direction.HORIZONTAL);
+        result -= getRatingForDirection(x, y, opponent, Direction.VERTICAL);
+        result -= getRatingForDirection(x, y, opponent, Direction.DIAGONAL_UP);
+        result -= getRatingForDirection(x, y, opponent, Direction.DIAGONAL_DOWN);
 
         return result;
     }
@@ -230,7 +237,7 @@ public class GameBoard
 
         for (int i = 0; i < WIDTH; i++)
         {
-            System.out.println(i + ": " + getRating(i, PlayerType.PLAYER_A, false));
+            System.out.println(i + ": " + getRating(i, PlayerType.PLAYER_B));
         }
     }
 }
