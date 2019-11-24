@@ -14,8 +14,6 @@ public class Renderer
 
     public void render()
     {
-        printTokenHorizontal();
-
         for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
 
         System.out.println("");
@@ -25,7 +23,7 @@ public class Renderer
             System.out.print("|");
             for (int j = 0; j < WIDTH; j++)
             {
-                ConnectFourLogic.PlayerType player = mController.getPlayerType(j, HEIGHT - i - 1);
+                GameBoard.PlayerType player = mController.getPlayerType(j, HEIGHT - i - 1);
                 switch(player)
                 {
                     case EMPTY:
@@ -45,39 +43,4 @@ public class Renderer
         System.out.println("");
     }
 
-    private void printTokenHorizontal()
-    {
-        for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
-
-        System.out.println("");
-
-        for (int i = 0; i < HEIGHT; i++)
-        {
-            System.out.print("#");
-            for (int j = 0; j < WIDTH; j++)
-            {
-                ConnectFourLogic.PlayerType player = mController.getPlayerType(j, HEIGHT - i - 1);
-                ConnectFourLogic.Token token = mController.getToken(j, HEIGHT - i - 1);
-                switch(player)
-                {
-                    case EMPTY:
-//                        System.out.print(" " + token.getDir(HO));
-                        System.out.print(" " + token.getTotal(ConnectFourLogic.PlayerType.PLAYER_A));
-                        break;
-                    case PLAYER_A:
-//                        System.out.print(" " + token.getDir(ConnectFourLogic.Direction.HORIZONTAL, ConnectFourLogic.PlayerType.PLAYER_A));
-//                        System.out.print(" " + token.getTotal(ConnectFourLogic.PlayerType.PLAYER_A));
-                        System.out.print("  ");
-                        break;
-                    case PLAYER_B:
-//                        System.out.print("_" + token.horizontal[0]);
-                        System.out.print("  ");
-                        break;
-                }
-            }
-            System.out.println(" #");
-        }
-        for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
-        System.out.println("");
-    }
 }

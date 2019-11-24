@@ -17,7 +17,5 @@ public class Main
             System.out.println("GOT AN EXCEPTION");
             e.printStackTrace();
         }
-
-        //MinMax x = new MinMax(5, true);
     }
 }

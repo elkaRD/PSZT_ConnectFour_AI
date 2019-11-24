@@ -249,6 +249,9 @@ public class GameBoard
     {
         //debugPrintTokenHorizontal();
 
+        System.out.print("  ");
+        for (int i = 0; i < WIDTH; i++) System.out.print(i + " ");
+        System.out.println(" ");
         for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
 
         System.out.println("");

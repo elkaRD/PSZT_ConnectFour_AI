@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class AIEngine
 {
     public static final int INFINITY = 1000000000;
+    public static final boolean ENABLE_ALPHA_BETA = false;
 
     public class Node
     {
@@ -85,11 +86,11 @@ public class AIEngine
             else
                 beta = Math.min(beta, bestNode.value);
 
-//            if (alpha >= beta) //TODO: uncomment
-//            {
-////                System.out.println("ALPHA > BETA");
-//                break;
-//            }
+            if (ENABLE_ALPHA_BETA && alpha >= beta)
+            {
+//                System.out.println("ALPHA > BETA");
+                break;
+            }
         }
 
         node.value = bestNode.value;
