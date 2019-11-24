@@ -8,6 +8,8 @@ public class Controller
     private ConnectFourLogic mBoardLogic;
     private Renderer mRenderer;
 
+    private GameBoard gameBoard;
+
     private boolean mCurTurn;
 
     public Controller(int width, int height, boolean playerAStarts)
@@ -17,6 +19,8 @@ public class Controller
 
         mBoardLogic = new ConnectFourLogic(WIDTH, HEIGHT);
         mRenderer = new Renderer(this);
+
+        gameBoard = new GameBoard(WIDTH, HEIGHT);
 
         //mRenderer.render();
 
@@ -33,14 +37,15 @@ public class Controller
         return mBoardLogic.getToken(x, y);
     }
 
-    public void run()
+    public void run() throws Exception
     {
         Scanner input = new Scanner(System.in);
-
+        MinMax aiEngine = new MinMax(WIDTH, true);
 
         while (true)
         {
-            mRenderer.render();
+            //mRenderer.render();
+            gameBoard.debugDisplay();
 
             ConnectFourLogic.PlayerType curPlayer = mCurTurn ? ConnectFourLogic.PlayerType.PLAYER_A : ConnectFourLogic.PlayerType.PLAYER_B;
             int selectedColumn;
@@ -49,10 +54,28 @@ public class Controller
             {
                 if (curPlayer == ConnectFourLogic.PlayerType.PLAYER_A) System.out.println("PLAYER A: ");
                 else System.out.println("PLAYER B: ");
-                System.out.println("Select column to insert ");
-                selectedColumn = input.nextInt();
+
+                if (curPlayer == ConnectFourLogic.PlayerType.PLAYER_A)
+                {
+                    System.out.println("Select column to insert ");
+                    selectedColumn = input.nextInt();
+                    aiEngine.makeOpponentMove(selectedColumn);
+                }
+                else
+                {
+                    selectedColumn = aiEngine.getAIMove();
+
+                    if (selectedColumn < 0 || selectedColumn >= WIDTH)
+                    {
+                        System.out.println("FATAL ERROR " + selectedColumn);
+                        throw new Exception("AI's move out of board");
+                    }
+                }
+
+                GameBoard.PlayerType p = curPlayer == ConnectFourLogic.PlayerType.PLAYER_A ? GameBoard.PlayerType.PLAYER_A : GameBoard.PlayerType.PLAYER_B;
+                gameBoard.insertToken(selectedColumn, p);
             }
-            while (mBoardLogic.insertToken(selectedColumn, ConnectFourLogic.PlayerType.PLAYER_A) != 0); //TODO: change it back after debugging
+            while (mBoardLogic.insertToken(selectedColumn, curPlayer) != 0);
 
             mCurTurn = !mCurTurn;
         }

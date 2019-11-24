@@ -9,6 +9,11 @@ public class ConnectFourLogic
     private boolean gameOver = false;
     private PlayerType winner = PlayerType.EMPTY;
 
+    public boolean getGameOver()
+    {
+        return gameOver;
+    }
+
     Token[][] board;
     int[] heightsOfColumns;
 
@@ -121,19 +126,23 @@ public class ConnectFourLogic
         return heightsOfColumns[column] != HEIGHT;
     }
 
-    public int getRatingForPlayer(PlayerType playerType)
-    {
-        int playerId = getPlayerTypeId(playerType);
+    public int getRatingForColumn(int column) {
+        //int playerId = getPlayerTypeId(playerType);
 
         int result = 0;
+        int multiplier = -1;
 
-        for (int x = 0; x < WIDTH; x++)
+        for (int playerId = 0; playerId < 2; playerId++)
         {
-            for (int y = 0; y < HEIGHT; y++)
+            if (playerId == 1) multiplier += 2;
+            //for (int x = 0; x < WIDTH; x++)
             {
-                if (board[x][y].total[playerId] == 3) return 10000;
-                if (board[x][y].total[playerId] == 2) result += 100;
-                if (board[x][y].total[playerId] == 1) result += 10;
+                for (int y = 0; y < HEIGHT; y++)
+                {
+                    if (board[column][y].total[playerId] == 3) return 10000 * multiplier;
+                    if (board[column][y].total[playerId] == 2) result += 100 * multiplier;
+                    if (board[column][y].total[playerId] == 1) result += 10 * multiplier;
+                }
             }
         }
 

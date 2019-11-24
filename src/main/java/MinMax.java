@@ -1,8 +1,4 @@
-import sun.jvm.hotspot.debugger.windbg.WindbgDebugger;
-
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class MinMax
 {
@@ -22,9 +18,9 @@ public class MinMax
             board = parent.board.makeCopy();
             board.insertToken(move, player);
 
-            value = board.getRatingForPlayer(player);
+            value = board.getRatingForColumn(move);
 
-            board.debugDisplay();
+            //board.debugDisplay();
 
             if (!playerType) value *= -1;
 
@@ -50,7 +46,7 @@ public class MinMax
 
     public void displayCurTree()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 5; i++)
         {
             System.out.println("LAYER " + i);
 
@@ -63,6 +59,7 @@ public class MinMax
     {
         if (layer == 0)
         {
+//            System.out.print("isMax: " + node.);
             System.out.print(node.value + ", ");
             return;
         }
@@ -80,17 +77,19 @@ public class MinMax
     private boolean opponentTurn;
     private boolean lastMove;
 
-    public MinMax(int width, boolean opponentTurn)
+    public MinMax(int width, boolean meFirst)
     {
         WIDTH = width;
-        this.opponentTurn = opponentTurn;
+        this.opponentTurn = !meFirst;
 
         root = new Node();
         root.board = new ConnectFourLogic(WIDTH, 8);
-        addAllMoves(root, opponentTurn);
+        addAllMoves(root, meFirst);
         addAllMoves();
         addAllMoves();
-        addAllMoves();
+//        addAllMoves();
+//        addAllMoves();
+//        addAllMoves();
 
         displayCurTree();
 
@@ -168,13 +167,16 @@ public class MinMax
     {
         lastMove = isMax;
 
+        if (node.board.getGameOver())
+            return;
+
         if (node.children.size() == 0)
         {
             for (int i = 0; i < WIDTH; i++)
             {
                 if (!node.board.checkSpaceForToken(i)) continue;
 
-                node.children.add(new Node(node, i, !isMax));
+                node.children.add(new Node(node, i, isMax));
             }
 
             return;
@@ -182,7 +184,7 @@ public class MinMax
 
         for (Node child : node.children)
         {
-            addAllMoves(child, !isMax);
+            addAllMoves(child, isMax);
         }
     }
 
@@ -203,7 +205,7 @@ public class MinMax
             if (child.move == column)
             {
                 root = child;
-                return;
+                break;
             }
         }
 
@@ -217,7 +219,7 @@ public class MinMax
     {
         if (opponentTurn)
         {
-            System.out.println("It's apponent's tuen");
+            System.out.println("It's opponent's turn");
             return -1;
         }
 
@@ -226,6 +228,8 @@ public class MinMax
         root = bestMoveNode;
 
         opponentTurn = true;
+
+        displayCurTree();
 
         return bestMove;
     }
@@ -249,11 +253,11 @@ public class MinMax
             {
                 bestNode = child;
             }
-            else if (isMax && child.value > bestNode.value)
+            else if (!isMax && child.value > bestNode.value)
             {
                 bestNode = child;
             }
-            else if (!isMax && child.value < bestNode.value)
+            else if (isMax && child.value < bestNode.value)
             {
                 bestNode = child;
             }
@@ -265,11 +269,11 @@ public class MinMax
 
 //            System.out.println("DEBUG " + node.children.get(i).value + ": " + alpha + ", " + beta);
 
-            if (alpha >= beta)
-            {
-//                System.out.println("ALPHA > BETA");
-                break;
-            }
+//            if (alpha >= beta) //TODO: uncomment
+//            {
+////                System.out.println("ALPHA > BETA");
+//                break;
+//            }
         }
 
         node.value = bestNode.value;
