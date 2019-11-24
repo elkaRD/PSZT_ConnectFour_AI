@@ -22,6 +22,7 @@ public class AIEngine
             board = parent.board.makeCopy();
             playerType = player;
             value = board.getRating(column, player);
+            if (player == GameBoard.PlayerType.PLAYER_B) value *= -1;
             board.insertToken(column, player);
 
             if (board.getGameOver()) isTerminal = true;
@@ -56,7 +57,7 @@ public class AIEngine
         addAllMoves();
         addAllMoves();
         addAllMoves();
-        addAllMoves();
+//        addAllMoves();
     }
 
     public Node getNextNodeAlphaBeta(Node node, boolean isMax, int alpha, int beta)
@@ -148,8 +149,13 @@ public class AIEngine
     {
         //displayCurTree();
 
+
+
         Node bestMove = getNextNodeAlphaBeta(root, true, -INFINITY, INFINITY);
+        displayCurTree();
         root = bestMove;
+
+        System.out.println("Picked " + bestMove.move + "   with value " + bestMove.value);
 
         return bestMove.move;
     }

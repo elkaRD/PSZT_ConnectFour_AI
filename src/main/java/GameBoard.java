@@ -133,10 +133,10 @@ public class GameBoard
         result += getRatingForDirection(x, y, player, Direction.DIAGONAL_UP);
         result += getRatingForDirection(x, y, player, Direction.DIAGONAL_DOWN);
 
-        result -= getRatingForDirection(x, y, opponent, Direction.HORIZONTAL);
-        result -= getRatingForDirection(x, y, opponent, Direction.VERTICAL);
-        result -= getRatingForDirection(x, y, opponent, Direction.DIAGONAL_UP);
-        result -= getRatingForDirection(x, y, opponent, Direction.DIAGONAL_DOWN);
+//        result -= getRatingForDirection(x, y, opponent, Direction.HORIZONTAL);
+//        result -= getRatingForDirection(x, y, opponent, Direction.VERTICAL);
+//        result -= getRatingForDirection(x, y, opponent, Direction.DIAGONAL_UP);
+//        result -= getRatingForDirection(x, y, opponent, Direction.DIAGONAL_DOWN);
 
         return result;
     }
