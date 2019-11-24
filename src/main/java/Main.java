@@ -4,7 +4,8 @@ public class Main
 {
     public static void main(String[] args)
     {
-        System.out.println("PSZT");
+        System.out.println("PSZT 19Z");
+        System.out.println("@Reacryp");
 
         Controller game = new Controller(7, 8, true);
 

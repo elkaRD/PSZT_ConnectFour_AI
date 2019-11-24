@@ -11,8 +11,10 @@ public class GameBoard
         return gameOver;
     }
 
-    Token[][] board;
-    int[] heightsOfColumns;
+    private Token[][] board;
+    private int[] heightsOfColumns;
+
+    private boolean isWinningMove;
 
     public enum PlayerType
     {
@@ -128,15 +130,20 @@ public class GameBoard
         if (x > 2 && x < WIDTH - 3) result += 5;
         if (y > 2 && y < HEIGHT - 3) result += 5;
 
+        isWinningMove = false;
+
         result += getRatingForDirection(x, y, player, Direction.HORIZONTAL);
         result += getRatingForDirection(x, y, player, Direction.VERTICAL);
         result += getRatingForDirection(x, y, player, Direction.DIAGONAL_UP);
         result += getRatingForDirection(x, y, player, Direction.DIAGONAL_DOWN);
 
-//        result -= getRatingForDirection(x, y, opponent, Direction.HORIZONTAL);
-//        result -= getRatingForDirection(x, y, opponent, Direction.VERTICAL);
-//        result -= getRatingForDirection(x, y, opponent, Direction.DIAGONAL_UP);
-//        result -= getRatingForDirection(x, y, opponent, Direction.DIAGONAL_DOWN);
+        if (!isWinningMove && y + 1 < HEIGHT)
+        {
+            result -= 0.8 * (double) getRatingForDirection(x, y+1, opponent, Direction.HORIZONTAL);
+            result -= 0.8 * (double) getRatingForDirection(x, y+1, opponent, Direction.VERTICAL);
+            result -= 0.8 * (double) getRatingForDirection(x, y+1, opponent, Direction.DIAGONAL_UP);
+            result -= 0.8 * (double) getRatingForDirection(x, y+1, opponent, Direction.DIAGONAL_DOWN);
+        }
 
         return result;
     }
@@ -205,6 +212,8 @@ public class GameBoard
             if (board[hx][hy].player == opponent) break;
             if (board[hx][hy].player == PlayerType.EMPTY) near = false;
         }
+
+        isWinningMove = foundNear >= 3;
 
         return VALUE[foundCounter] + VALUE_NEAR[foundNear];
     }
@@ -280,9 +289,9 @@ public class GameBoard
         for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
         System.out.println("");
 
-        for (int i = 0; i < WIDTH; i++)
-        {
-            System.out.println(i + ": " + getRating(i, PlayerType.PLAYER_B));
-        }
+//        for (int i = 0; i < WIDTH; i++)
+//        {
+//            System.out.println(i + ": " + getRating(i, PlayerType.PLAYER_B));
+//        }
     }
 }

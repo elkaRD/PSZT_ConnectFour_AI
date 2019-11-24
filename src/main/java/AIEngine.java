@@ -57,7 +57,7 @@ public class AIEngine
         addAllMoves();
         addAllMoves();
         addAllMoves();
-//        addAllMoves();
+        addAllMoves();
     }
 
     public Node getNextNodeAlphaBeta(Node node, boolean isMax, int alpha, int beta)
@@ -152,10 +152,11 @@ public class AIEngine
 
 
         Node bestMove = getNextNodeAlphaBeta(root, true, -INFINITY, INFINITY);
-        displayCurTree();
+        //displayCurTree();
         root = bestMove;
 
-        System.out.println("Picked " + bestMove.move + "   with value " + bestMove.value);
+//        System.out.println("Picked " + bestMove.move + "   with value " + bestMove.value);
+        System.out.println("Picked " + bestMove.move);
 
         return bestMove.move;
     }
