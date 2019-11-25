@@ -1,10 +1,14 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class AIEngine
 {
     public static final int INFINITY = 1000000000;
     public static final int CLOSER_VICTORY = 1000000;
+
     public static final boolean ENABLE_ALPHA_BETA = true;
+    public static final boolean ENABLE_SORTING_CHILDREN_WITHIN_NODE = true;
 
     private final int WIDTH;
     private final int HEIGHT;
@@ -117,6 +121,9 @@ public class AIEngine
                 node.children.add(new Node(node, i, getSecondPlayer(node.playerType)));
             }
 
+            if (ENABLE_SORTING_CHILDREN_WITHIN_NODE)
+                sortChildrenByValue(node);
+
             return;
         }
 
@@ -149,7 +156,7 @@ public class AIEngine
     public int getAiMove()
     {
         Node bestMove = getNextNodeAlphaBeta(root, true, -INFINITY, INFINITY);
-//        DebugUI.displayCurTree(this);
+//        DebugUI.displayCurTree(this, 8);
         root = bestMove;
 
         System.out.println("Picked " + bestMove.move + "   with value " + bestMove.value);
@@ -160,5 +167,21 @@ public class AIEngine
     public Node debugGetRoot()
     {
         return root;
+    }
+
+    private void sortChildrenByValue(Node node)
+    {
+        final int reverse = node.playerType == GameBoard.PlayerType.PLAYER_A ? -1 : 1;
+
+        Collections.sort(node.children, new Comparator<Node>()
+        {
+            @Override
+            public int compare(final Node object1, final Node object2)
+            {
+                if (object1.value < object2.value) return -1 * reverse;
+                if (object1.value > object2.value) return 1 * reverse;
+                return 0;
+            }
+        });
     }
 }

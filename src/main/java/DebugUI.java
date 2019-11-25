@@ -34,9 +34,9 @@ public class DebugUI
         System.out.println("");
     }
 
-    public static void displayCurTree(AIEngine ai)
+    public static void displayCurTree(AIEngine ai, int depth)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < depth; i++)
         {
             System.out.println("LAYER " + i);
 
