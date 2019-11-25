@@ -4,7 +4,7 @@ public class GameBoard
     public final int HEIGHT;
 
     private boolean gameOver = false;
-    private PlayerType winner = PlayerType.EMPTY;
+    public PlayerType winner = PlayerType.EMPTY;
 
     public boolean getGameOver()
     {

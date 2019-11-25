@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class AIEngine
 {
     public static final int INFINITY = 1000000000;
+    public static final int CLOSER_VICTORY = 100000;
     public static final boolean ENABLE_ALPHA_BETA = false;
 
     public class Node
@@ -14,7 +15,11 @@ public class AIEngine
             //value = board.getRating(column, player);
             //board.insertToken(column, player);
 
-            if (board.getGameOver()) isTerminal = true;
+            if (board.getGameOver())
+            {
+                isTerminal = true;
+                //value *= 100;
+            }
         }
 
         public Node(Node parent, int column, GameBoard.PlayerType player)
@@ -22,11 +27,21 @@ public class AIEngine
             board = parent.board.makeCopy();
             playerType = player;
             value = board.getRating(column, player);
-            if (player == GameBoard.PlayerType.PLAYER_B) value *= -1;
+            if (player == GameBoard.PlayerType.PLAYER_A) value *= -1;
             board.insertToken(column, player);
 
             //TODO: check if setting terminal states is correct
-            if (board.getGameOver()) isTerminal = true;
+            if (board.getGameOver())
+            {
+                isTerminal = true;
+//                value *= 100;
+            }
+
+            if (board.getGameOver() && move == 2)
+            {
+                int d = 0;
+                d++;
+            }
 
             move = column;
         }
@@ -74,11 +89,11 @@ public class AIEngine
             {
                 bestNode = child;
             }
-            else if (!isMax && child.value > bestNode.value)
+            else if (!isMax && child.value < bestNode.value)
             {
                 bestNode = child;
             }
-            else if (isMax && child.value < bestNode.value)
+            else if (isMax && child.value > bestNode.value)
             {
                 bestNode = child;
             }
@@ -106,7 +121,14 @@ public class AIEngine
 
     public void addAllMoves(Node node)
     {
-        if (node.isTerminal) return;
+        if (node.isTerminal)
+        {
+            if (node.board.winner == GameBoard.PlayerType.PLAYER_B)
+                node.value += CLOSER_VICTORY;
+            else
+                node.value -= CLOSER_VICTORY;
+            return;
+        }
 
         if (node.children.size() == 0)
         {
@@ -181,6 +203,14 @@ public class AIEngine
 
     public void displayLayer(Node node, int layer)
     {
+        if (node.isTerminal)
+        {
+            int c = node.children.size();
+            char p = 'a';
+            if (node.board.winner == GameBoard.PlayerType.PLAYER_B) p = 'b';
+            System.out.print(node.move + "TERMINAL" + p + node.value + ", ");
+        }
+
         if (layer == 0)
         {
             System.out.print(node.value + ", ");
