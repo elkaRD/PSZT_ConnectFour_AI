@@ -25,6 +25,7 @@ public class AIEngine
             if (player == GameBoard.PlayerType.PLAYER_B) value *= -1;
             board.insertToken(column, player);
 
+            //TODO: check if setting terminal states is correct
             if (board.getGameOver()) isTerminal = true;
 
             move = column;
@@ -152,11 +153,11 @@ public class AIEngine
 
 
         Node bestMove = getNextNodeAlphaBeta(root, true, -INFINITY, INFINITY);
-        //displayCurTree();
+        displayCurTree();
         root = bestMove;
 
-//        System.out.println("Picked " + bestMove.move + "   with value " + bestMove.value);
-        System.out.println("Picked " + bestMove.move);
+        System.out.println("Picked " + bestMove.move + "   with value " + bestMove.value);
+//        System.out.println("Picked " + bestMove.move);
 
         return bestMove.move;
     }
