@@ -1,15 +1,13 @@
 public class GameBoard
 {
+    private final static int[] VALUE = {0, 1, 5, 10, 50, 100000, 100000};
+    private final static int[] VALUE_NEAR = {0, 2, 10, 100000, 100000, 100000, 100000};
+
     public final int WIDTH;
     public final int HEIGHT;
 
     private boolean gameOver = false;
-    public PlayerType winner = PlayerType.EMPTY;
-
-    public boolean getGameOver()
-    {
-        return gameOver;
-    }
+    private PlayerType winner = PlayerType.EMPTY;
 
     private Token[][] board;
     private int[] heightsOfColumns;
@@ -21,6 +19,14 @@ public class GameBoard
         EMPTY,
         PLAYER_A,
         PLAYER_B
+    }
+
+    public enum Direction
+    {
+        HORIZONTAL,
+        VERTICAL,
+        DIAGONAL_UP,
+        DIAGONAL_DOWN
     }
 
     public class Token
@@ -50,6 +56,16 @@ public class GameBoard
         for (int i = 0; i < WIDTH; i++)
             for (int j =0; j < HEIGHT; j++)
                 board[i][j] = new Token(PlayerType.EMPTY);
+    }
+
+    public boolean getGameOver()
+    {
+        return gameOver;
+    }
+
+    public PlayerType getWinner()
+    {
+        return winner;
     }
 
     public boolean checkSpaceForToken(int column)
@@ -104,17 +120,6 @@ public class GameBoard
 
         return temp;
     }
-
-    public enum Direction
-    {
-        HORIZONTAL,
-        VERTICAL,
-        DIAGONAL_UP,
-        DIAGONAL_DOWN
-    }
-
-    private final static int[] VALUE = {0, 1, 5, 10, 50, 100000, 100000};
-    private final static int[] VALUE_NEAR = {0, 2, 10, 100000, 100000, 100000, 100000};
 
     public int getRating(int column, PlayerType player)
     {
@@ -256,42 +261,6 @@ public class GameBoard
 
     public void debugDisplay()
     {
-        //debugPrintTokenHorizontal();
-
-        System.out.print("  ");
-        for (int i = 0; i < WIDTH; i++) System.out.print(i + " ");
-        System.out.println(" ");
-        for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
-
-        System.out.println("");
-
-        for (int i = 0; i < HEIGHT; i++)
-        {
-            System.out.print("|");
-            for (int j = 0; j < WIDTH; j++)
-            {
-                PlayerType player = getPlayerType(j, HEIGHT - i - 1);
-                switch(player)
-                {
-                    case EMPTY:
-                        System.out.print(" .");
-                        break;
-                    case PLAYER_A:
-                        System.out.print(" X");
-                        break;
-                    case PLAYER_B:
-                        System.out.print(" O");
-                        break;
-                }
-            }
-            System.out.println(" |");
-        }
-        for (int i = 0; i < WIDTH + 2; i++) System.out.print("--");
-        System.out.println("");
-
-//        for (int i = 0; i < WIDTH; i++)
-//        {
-//            System.out.println(i + ": " + getRating(i, PlayerType.PLAYER_B));
-//        }
+        DebugUI.debugDisplay(this);
     }
 }

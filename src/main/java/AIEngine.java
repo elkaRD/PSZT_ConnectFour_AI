@@ -3,23 +3,20 @@ import java.util.ArrayList;
 public class AIEngine
 {
     public static final int INFINITY = 1000000000;
-    public static final int CLOSER_VICTORY = 100000;
-    public static final boolean ENABLE_ALPHA_BETA = false;
+    public static final int CLOSER_VICTORY = 1000000;
+    public static final boolean ENABLE_ALPHA_BETA = true;
+
+    private final int WIDTH;
+    private final int HEIGHT;
+
+    private Node root;
 
     public class Node
     {
-        public Node(GameBoard gameBoard, GameBoard.PlayerType player)
+        public Node(GameBoard.PlayerType player)
         {
-            board = gameBoard.makeCopy();
+            board = new GameBoard(WIDTH, HEIGHT);
             playerType = player;
-            //value = board.getRating(column, player);
-            //board.insertToken(column, player);
-
-            if (board.getGameOver())
-            {
-                isTerminal = true;
-                //value *= 100;
-            }
         }
 
         public Node(Node parent, int column, GameBoard.PlayerType player)
@@ -30,44 +27,25 @@ public class AIEngine
             if (player == GameBoard.PlayerType.PLAYER_A) value *= -1;
             board.insertToken(column, player);
 
-            //TODO: check if setting terminal states is correct
-            if (board.getGameOver())
-            {
-                isTerminal = true;
-//                value *= 100;
-            }
-
-            if (board.getGameOver() && move == 2)
-            {
-                int d = 0;
-                d++;
-            }
-
+            if (board.getGameOver()) isTerminal = true;
             move = column;
         }
 
         GameBoard board;
         ArrayList<Node> children = new ArrayList<Node>();
-        int value;
+
         boolean isTerminal = false;
         GameBoard.PlayerType playerType;
-
         int move;
+        int value;
     }
-
-    private Node root;
-    public final int WIDTH;
-    public final int HEIGHT;
-
-    GameBoard board;
 
     public AIEngine(int width, int height)
     {
         WIDTH = width;
         HEIGHT = height;
 
-        board = new GameBoard(WIDTH, HEIGHT);
-        root = new Node(board, GameBoard.PlayerType.PLAYER_B);
+        root = new Node(GameBoard.PlayerType.PLAYER_B);
 
         addAllMoves();
         addAllMoves();
@@ -123,7 +101,7 @@ public class AIEngine
     {
         if (node.isTerminal)
         {
-            if (node.board.winner == GameBoard.PlayerType.PLAYER_B)
+            if (node.board.getWinner() == GameBoard.PlayerType.PLAYER_B)
                 node.value += CLOSER_VICTORY;
             else
                 node.value -= CLOSER_VICTORY;
@@ -170,56 +148,17 @@ public class AIEngine
 
     public int getAiMove()
     {
-        //displayCurTree();
-
-
-
         Node bestMove = getNextNodeAlphaBeta(root, true, -INFINITY, INFINITY);
-        displayCurTree();
+//        DebugUI.displayCurTree(this);
         root = bestMove;
 
         System.out.println("Picked " + bestMove.move + "   with value " + bestMove.value);
-//        System.out.println("Picked " + bestMove.move);
 
         return bestMove.move;
     }
 
-
-
-
-
-
-
-    public void displayCurTree()
+    public Node debugGetRoot()
     {
-        for (int i = 0; i < 5; i++)
-        {
-            System.out.println("LAYER " + i);
-
-            displayLayer(root, i);
-            System.out.println(" ");
-        }
-    }
-
-    public void displayLayer(Node node, int layer)
-    {
-        if (node.isTerminal)
-        {
-            int c = node.children.size();
-            char p = 'a';
-            if (node.board.winner == GameBoard.PlayerType.PLAYER_B) p = 'b';
-            System.out.print(node.move + "TERMINAL" + p + node.value + ", ");
-        }
-
-        if (layer == 0)
-        {
-            System.out.print(node.value + ", ");
-            return;
-        }
-
-        for (Node child : node.children)
-        {
-            displayLayer(child, layer-1);
-        }
+        return root;
     }
 }
