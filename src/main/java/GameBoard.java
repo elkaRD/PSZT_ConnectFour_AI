@@ -73,7 +73,8 @@ public class GameBoard
         return heightsOfColumns[column] != HEIGHT;
     }
 
-    public int insertToken(int column, PlayerType playerType)
+    //public int insertToken(int column, Controller.UserType playerType, PlayerType playerNumber)
+    public int insertToken(int column, PlayerType playerNumber)
     {
         if (heightsOfColumns[column] == HEIGHT) return -1;
 
@@ -81,12 +82,12 @@ public class GameBoard
         int y = heightsOfColumns[column];
         heightsOfColumns[column]++;
 
-        board[x][y].player = playerType;
+        board[x][y].player = playerNumber;
 
-        if (checkGameOver(x, y, playerType))
+        if (checkGameOver(x, y, playerNumber))
         {
             gameOver = true;
-            winner = playerType;
+            winner = playerNumber;
         }
 
         return 0;
@@ -125,7 +126,7 @@ public class GameBoard
     {
         if (heightsOfColumns[column] == HEIGHT) return 0;
 
-        PlayerType opponent = player == PlayerType.PLAYER_A ? PlayerType.PLAYER_B : PlayerType.PLAYER_A;
+        PlayerType opponent = player == PlayerType.PLAYER_B ? PlayerType.PLAYER_A : PlayerType.PLAYER_B;
 
         int x = column;
         int y = heightsOfColumns[column];
@@ -185,7 +186,7 @@ public class GameBoard
         int foundCounter = 0;
         int foundNear = 0;
         boolean near = true;
-        PlayerType opponent = player == PlayerType.PLAYER_A ? PlayerType.PLAYER_B : PlayerType.PLAYER_A;
+        PlayerType opponent = player == PlayerType.PLAYER_B ? PlayerType.PLAYER_A : PlayerType.PLAYER_B;
 
         for (int i = 1; i < 4; i++)
         {

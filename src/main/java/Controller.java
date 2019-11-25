@@ -11,7 +11,20 @@ public class Controller
 
     private boolean mCurTurn;
 
-    public Controller(int width, int height, boolean playerAStarts)
+    private UserType FirstPlayerType;
+    private UserType SecondPlayerType;
+    /*
+        two more variables mean types of player A and player B
+     */
+
+    public enum UserType
+    {
+        EMPTY,
+        MACHINE,
+        HUMAN
+    }
+
+    public Controller(int width, int height, boolean playerAStarts, UserType firstPlayerType, UserType secondPlayerType)
     {
         WIDTH = width;
         HEIGHT = height;
@@ -23,6 +36,9 @@ public class Controller
         //mRenderer.render();
 
         mCurTurn = playerAStarts;
+
+        FirstPlayerType = firstPlayerType;
+        SecondPlayerType = secondPlayerType;
     }
 
     public GameBoard.PlayerType getPlayerType(int x, int y)
@@ -39,32 +55,40 @@ public class Controller
     {
         Scanner input = new Scanner(System.in);
         //MinMax aiEngine = new MinMax(WIDTH, true);
-        AIEngine aiEngine = new AIEngine(WIDTH, HEIGHT);
-
+        AIEngine aiEngineFirst = new AIEngine(WIDTH, HEIGHT);
+        AIEngine aiEngineSecond = new AIEngine(WIDTH, HEIGHT);
         while (true)
         {
             //mRenderer.render();
             gameBoard.debugDisplay();
 
-            GameBoard.PlayerType curPlayer = mCurTurn ? GameBoard.PlayerType.PLAYER_A : GameBoard.PlayerType.PLAYER_B;
+            UserType curPlayerType = mCurTurn ? FirstPlayerType : SecondPlayerType;
+            GameBoard.PlayerType curPlayerNumber = mCurTurn ? GameBoard.PlayerType.PLAYER_A : GameBoard.PlayerType.PLAYER_B;
             int selectedColumn;
 
             do
             {
-                if (curPlayer == GameBoard.PlayerType.PLAYER_A) System.out.println("PLAYER A: ");
+                if (curPlayerNumber == GameBoard.PlayerType.PLAYER_A) System.out.println("PLAYER A: ");
                 else System.out.println("PLAYER B: ");
 
-                if (curPlayer == GameBoard.PlayerType.PLAYER_A)
+                if (curPlayerType == UserType.HUMAN)
                 {
                     System.out.println("Select column to insert ");
                     selectedColumn = input.nextInt();
                     //aiEngine.makeOpponentMove(selectedColumn);
-                    aiEngine.opponentMove(selectedColumn);
+                    aiEngineFirst.opponentMove(selectedColumn);
+
                 }
                 else
                 {
                     //selectedColumn = aiEngine.getAIMove();
-                    selectedColumn = aiEngine.getAiMove();
+                    if(curPlayerNumber == GameBoard.PlayerType.PLAYER_A) {
+                        selectedColumn = aiEngineFirst.getAiMove();
+                    }
+                    else {
+                        selectedColumn = aiEngineSecond.getAiMove();
+                    }
+
 
                     if (selectedColumn < 0 || selectedColumn >= WIDTH)
                     {
@@ -76,7 +100,8 @@ public class Controller
                 //GameBoard.PlayerType p = curPlayer == GameBoard.PlayerType.PLAYER_A ? GameBoard.PlayerType.PLAYER_A : GameBoard.PlayerType.PLAYER_B;
                 //gameBoard.insertToken(selectedColumn, p);
             }
-            while (gameBoard.insertToken(selectedColumn, curPlayer) != 0);
+            while (gameBoard.insertToken(selectedColumn, curPlayerNumber) != 0);
+           // while (gameBoard.insertToken(selectedColumn, curPlayerType, curPlayerNumber) != 0);
 
             if (gameBoard.getGameOver())
             {
@@ -86,6 +111,7 @@ public class Controller
             }
 
             mCurTurn = !mCurTurn;
+
         }
     }
 }
