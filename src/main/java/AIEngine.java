@@ -28,7 +28,9 @@ public class AIEngine
             board = parent.board.makeCopy();
             playerType = player;
             value = board.getRating(column, player);
+
             if (player == GameBoard.PlayerType.PLAYER_A) value *= -1;
+
             board.insertToken(column, player);
 
             if (board.getGameOver()) isTerminal = true;
@@ -44,18 +46,17 @@ public class AIEngine
         int value;
     }
 
-    public AIEngine(int width, int height)
+    public AIEngine(int width, int height, int depth, GameBoard.PlayerType myType)
     {
         WIDTH = width;
         HEIGHT = height;
 
-        root = new Node(GameBoard.PlayerType.PLAYER_B);
+        root = new Node(myType);
 
-        addAllMoves();
-        addAllMoves();
-        addAllMoves();
-        addAllMoves();
-        addAllMoves();
+        for(int i = 0; i<depth; ++i) {
+            addAllMoves();
+        }
+
     }
 
     public Node getNextNodeAlphaBeta(Node node, boolean isMax, int alpha, int beta)
@@ -127,6 +128,7 @@ public class AIEngine
             return;
         }
 
+        //gdy node nie jest plansza wygrywajaca - terminalna i gdy node ma jakies dzieci
         for (Node child : node.children)
         {
             addAllMoves(child);
@@ -156,7 +158,7 @@ public class AIEngine
     public int getAiMove()
     {
         Node bestMove = getNextNodeAlphaBeta(root, true, -INFINITY, INFINITY);
-//        DebugUI.displayCurTree(this, 8);
+        //DebugUI.displayCurTree(this, 8);
         root = bestMove;
 
         System.out.println("Picked " + bestMove.move + "   with value " + bestMove.value);

@@ -73,21 +73,26 @@ public class GameBoard
         return heightsOfColumns[column] != HEIGHT;
     }
 
-    //public int insertToken(int column, Controller.UserType playerType, PlayerType playerNumber)
-    public int insertToken(int column, PlayerType playerNumber)
+    public int insertToken(int column, PlayerType playerType)
     {
+        if (column < 0 || column >= WIDTH)
+        {
+            System.out.println("Column " + column + "out of range");
+            return -1;
+        }
+
         if (heightsOfColumns[column] == HEIGHT) return -1;
 
         int x = column;
         int y = heightsOfColumns[column];
         heightsOfColumns[column]++;
 
-        board[x][y].player = playerNumber;
+        board[x][y].player = playerType;
 
-        if (checkGameOver(x, y, playerNumber))
+        if (checkGameOver(x, y, playerType))
         {
             gameOver = true;
-            winner = playerNumber;
+            winner = playerType;
         }
 
         return 0;

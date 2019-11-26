@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 
 public class Controller
@@ -11,20 +12,22 @@ public class Controller
 
     private boolean mCurTurn;
 
-    private UserType FirstPlayerType;
-    private UserType SecondPlayerType;
+    private UserType firstPlayerType;
+    private UserType secondPlayerType;
+
+    private int algorithmDepth;
+    private boolean isAlfaBetaOn;
     /*
         two more variables mean types of player A and player B
      */
 
     public enum UserType
     {
-        EMPTY,
         MACHINE,
         HUMAN
     }
 
-    public Controller(int width, int height, boolean playerAStarts, UserType firstPlayerType, UserType secondPlayerType)
+    public Controller(int width, int height, UserType firstType, UserType secondType, int minMaxDepth, boolean alfaBetaOn)
     {
         WIDTH = width;
         HEIGHT = height;
@@ -35,10 +38,13 @@ public class Controller
 
         //mRenderer.render();
 
-        mCurTurn = playerAStarts;
+        mCurTurn = true;
 
-        FirstPlayerType = firstPlayerType;
-        SecondPlayerType = secondPlayerType;
+        firstPlayerType = firstType;
+        secondPlayerType = secondType;
+
+        algorithmDepth = minMaxDepth;
+        isAlfaBetaOn = alfaBetaOn;
     }
 
     public GameBoard.PlayerType getPlayerType(int x, int y)
@@ -54,15 +60,14 @@ public class Controller
     public void run() throws Exception
     {
         Scanner input = new Scanner(System.in);
-        //MinMax aiEngine = new MinMax(WIDTH, true);
-        AIEngine aiEngineFirst = new AIEngine(WIDTH, HEIGHT);
-        AIEngine aiEngineSecond = new AIEngine(WIDTH, HEIGHT);
+
+        AIEngine aiEngineFirst = new AIEngine(WIDTH, HEIGHT, algorithmDepth, GameBoard.PlayerType.PLAYER_A);
+        AIEngine aiEngineSecond = new AIEngine(WIDTH, HEIGHT, algorithmDepth, GameBoard.PlayerType.PLAYER_B);
         while (true)
         {
-            //mRenderer.render();
-            gameBoard.debugDisplay();
+            DebugUI.debugDisplay(gameBoard);
 
-            UserType curPlayerType = mCurTurn ? FirstPlayerType : SecondPlayerType;
+            UserType curPlayerType = mCurTurn ? firstPlayerType : secondPlayerType;
             GameBoard.PlayerType curPlayerNumber = mCurTurn ? GameBoard.PlayerType.PLAYER_A : GameBoard.PlayerType.PLAYER_B;
             int selectedColumn;
 
@@ -71,37 +76,38 @@ public class Controller
                 if (curPlayerNumber == GameBoard.PlayerType.PLAYER_A) System.out.println("PLAYER A: ");
                 else System.out.println("PLAYER B: ");
 
-                if (curPlayerType == UserType.HUMAN)
+                if (curPlayerNumber == GameBoard.PlayerType.PLAYER_A)
                 {
-                    System.out.println("Select column to insert ");
-                    selectedColumn = input.nextInt();
-                    //aiEngine.makeOpponentMove(selectedColumn);
-                    aiEngineFirst.opponentMove(selectedColumn);
+                    if(firstPlayerType == UserType.HUMAN) {
+                        System.out.println("Select column to insert ");
+                        selectedColumn = input.nextInt();
+                    }
+                    else{
+                        selectedColumn = aiEngineFirst.getAiMove();
+                    }
+
+                    if(secondPlayerType == UserType.MACHINE) {
+                        aiEngineSecond.opponentMove(selectedColumn);
+                    }
 
                 }
                 else
                 {
-                    //selectedColumn = aiEngine.getAIMove();
-                    if(curPlayerNumber == GameBoard.PlayerType.PLAYER_A) {
-                        selectedColumn = aiEngineFirst.getAiMove();
+                    if(secondPlayerType == UserType.HUMAN) {
+                        System.out.println("Select column to insert ");
+                        selectedColumn = input.nextInt();
                     }
-                    else {
+                    else{
                         selectedColumn = aiEngineSecond.getAiMove();
                     }
 
-
-                    if (selectedColumn < 0 || selectedColumn >= WIDTH)
-                    {
-                        System.out.println("FATAL ERROR " + selectedColumn);
-                        throw new Exception("AI's move out of board");
+                    if(firstPlayerType == UserType.MACHINE) {
+                        aiEngineFirst.opponentMove(selectedColumn);
                     }
                 }
 
-                //GameBoard.PlayerType p = curPlayer == GameBoard.PlayerType.PLAYER_A ? GameBoard.PlayerType.PLAYER_A : GameBoard.PlayerType.PLAYER_B;
-                //gameBoard.insertToken(selectedColumn, p);
             }
             while (gameBoard.insertToken(selectedColumn, curPlayerNumber) != 0);
-           // while (gameBoard.insertToken(selectedColumn, curPlayerType, curPlayerNumber) != 0);
 
             if (gameBoard.getGameOver())
             {
