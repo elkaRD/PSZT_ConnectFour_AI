@@ -36,6 +36,8 @@ public class GameWindow extends JFrame implements MouseListener {
 
     boolean state = false;
 
+    boolean disabled;
+
 
     public void changeState() {
         state = !state;
@@ -45,6 +47,7 @@ public class GameWindow extends JFrame implements MouseListener {
         controller = c;
         gameOver = false;
         xLeftSpotDim = new int[board.WIDTH];
+        disabled = false;
     }
 
     public void buildWindow()
@@ -201,12 +204,14 @@ public class GameWindow extends JFrame implements MouseListener {
     public void mouseClicked(MouseEvent e) {}
 
     public void mousePressed(MouseEvent e) {
+        if(disabled) return;
+
         pressedX = e.getX();
 
         System.out.println("Kliknięto w  x = " + pressedX);
         System.out.println("Jest to kolumna nr : " + selectedColumn(pressedX));
 
-        controller.onPickedColumn();
+        controller.onPickedColumn(selectedColumn(pressedX));
     }
 
     public void mouseReleased(MouseEvent e) {}

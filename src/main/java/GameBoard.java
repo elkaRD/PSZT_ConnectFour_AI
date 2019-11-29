@@ -13,6 +13,7 @@ public class GameBoard
     private int[] heightsOfColumns;
 
     private boolean isWinningMove;
+    private int numOfFreeSpots;
 
     public enum PlayerType
     {
@@ -53,9 +54,13 @@ public class GameBoard
         board = new Token[WIDTH][HEIGHT];
         heightsOfColumns = new int[WIDTH];
 
+        numOfFreeSpots = width*height;
+
         for (int i = 0; i < WIDTH; i++)
             for (int j =0; j < HEIGHT; j++)
                 board[i][j] = new Token(PlayerType.EMPTY);
+
+
     }
 
     public boolean getGameOver()
@@ -70,7 +75,7 @@ public class GameBoard
 
     public boolean checkSpaceForToken(int column)
     {
-        System.out.println("JEST MIEJSCE"); return heightsOfColumns[column] != HEIGHT;
+        return heightsOfColumns[column] != HEIGHT;
     }
 
     public int insertToken(int column, PlayerType playerType)
@@ -86,6 +91,7 @@ public class GameBoard
         int x = column;
         int y = heightsOfColumns[column];
         heightsOfColumns[column]++;
+        numOfFreeSpots--;
 
         board[x][y].player = playerType;
 
@@ -235,6 +241,8 @@ public class GameBoard
         if (checkGameOverForDirection(x, y, player, Direction.VERTICAL)) return true;
         if (checkGameOverForDirection(x, y, player, Direction.DIAGONAL_DOWN)) return true;
         if (checkGameOverForDirection(x, y, player, Direction.DIAGONAL_UP)) return true;
+
+        if(numOfFreeSpots == 0) return true;
 
         return false;
     }
