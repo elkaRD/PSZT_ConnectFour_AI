@@ -70,7 +70,7 @@ public class GameBoard
 
     public boolean checkSpaceForToken(int column)
     {
-        return heightsOfColumns[column] != HEIGHT;
+        System.out.println("JEST MIEJSCE"); return heightsOfColumns[column] != HEIGHT;
     }
 
     public int insertToken(int column, PlayerType playerType)

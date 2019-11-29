@@ -26,7 +26,7 @@ public class Main
 
         System.out.println("argument read correctly");
 
-        Controller game = new Controller(7, 15, aType, bType, minMaxDepth, enableAlfaBeta); //-astart +min, alfa
+        Controller game = new Controller(5, 7, aType, bType, minMaxDepth, enableAlfaBeta); //-astart +min, alfa
 
         System.out.println("game prepared");
 
@@ -42,6 +42,9 @@ public class Main
             System.out.println("GOT AN EXCEPTION");
             e.printStackTrace();
         }
+
+
+
     }
 
 
