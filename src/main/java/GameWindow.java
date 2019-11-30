@@ -9,44 +9,35 @@ import java.awt.geom.Rectangle2D;
 
 public class GameWindow extends JFrame implements MouseListener {
 
-    public int WIDTH = 500;
-    public int HEIGHT = 600;
+    private int WIDTH = 500;
+    private int HEIGHT = 600;
 
-    private int magicXTranslation = 8;
-    private int magicYTranslation = 37;
+    private int screenOffsetX;
+    private int screenOffsetY;
 
-    public int spotSize;
+    private int spotSize;
 
-    public GameBoard board;
-    public Controller controller;
+    private GameBoard board;
+    private Controller controller;
 
-    int lineHorizontalLength;
-    int lineVerticalLength;
+    private int lineHorizontalLength;
+    private int lineVerticalLength;
 
     //coordinates of left upper corner
     private int startX;
     private int startY;
 
-    private int[] xLeftSpotDim;
-
     public boolean gameOver;
     String message;
-    public int pressedX;
-    public int pressedY;
+    private int pressedX;
 
-    boolean state = false;
-
-    boolean disabled;
+    private boolean disabled;
 
 
-    public void changeState() {
-        state = !state;
-    }
     public GameWindow(GameBoard b, Controller c) {
         board = b;
         controller = c;
         gameOver = false;
-        xLeftSpotDim = new int[board.WIDTH];
         disabled = false;
     }
 
@@ -56,10 +47,16 @@ public class GameWindow extends JFrame implements MouseListener {
         panel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         getContentPane().add(panel, BorderLayout.CENTER);
 
+
         setBounds(0, 0, WIDTH, HEIGHT);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
+
+//        difference between pane and frame dimensions
+        screenOffsetX = getWidth() - panel.getWidth();
+        screenOffsetY = getHeight() - panel.getHeight();
+
         setFocusable(true);
         setVisible(true);
         setResizable(false);
@@ -77,7 +74,6 @@ public class GameWindow extends JFrame implements MouseListener {
         drawTokens(g2);
 
         if(gameOver) drawMessage(g2);
-
     }
 
     private void drawMessage(Graphics2D g) {
@@ -94,28 +90,16 @@ public class GameWindow extends JFrame implements MouseListener {
 
 
     private void calculateValues() {
-        double ratioWin = (double)WIDTH/HEIGHT;
+        double ratioWin = (double)(WIDTH-screenOffsetX)/(HEIGHT-screenOffsetY);
         double ratioBoa = (double)board.WIDTH/board.HEIGHT;
 
-        spotSize = ratioBoa > ratioWin ? WIDTH/board.WIDTH : HEIGHT/board.HEIGHT;
-        {
-//        if(ratioBoa > ratioWin) {
-//            spotSize = WIDTH/board.WIDTH;
-//        }
-//        else {
-//            spotSize = HEIGHT/board.HEIGHT;
-//        }
-        }
+        spotSize = ratioBoa > ratioWin ? (WIDTH-screenOffsetX)/board.WIDTH : (HEIGHT-screenOffsetY)/board.HEIGHT;
 
         lineVerticalLength = board.HEIGHT * spotSize;
         lineHorizontalLength = board.WIDTH * spotSize;
 
-        startX = (WIDTH - lineHorizontalLength) / 2;
-        startY = HEIGHT - spotSize*board.HEIGHT + magicYTranslation;
-        for(int i = 0; i<board.WIDTH; ++i) {
-            xLeftSpotDim[i] = startX + i * spotSize;
-        }
-
+        startX = (WIDTH + screenOffsetX - lineHorizontalLength) / 2;
+        startY = HEIGHT - lineVerticalLength + screenOffsetY - 3;
     }
 
     private void drawBoard(Graphics2D g2) {
@@ -183,23 +167,18 @@ public class GameWindow extends JFrame implements MouseListener {
         repaint();
     }
 
-    public void winningMessage(String winnerName) {
-        message = winnerName;
-        gameOver = true;
-    }
 
     private int selectedColumn(int x) {
 
         System.out.println("X position: " + x + " Spot length: " + spotSize);
 
-//        poprawić na xstartposition - już jest ok?
         int col = (x-startX)/spotSize;
 
         return col;
     }
 
-    public int getColumn() {
-        return selectedColumn(pressedX);
+    public void disableMouseListener() {
+         disabled = true;
     }
 
     public void mouseClicked(MouseEvent e) {}

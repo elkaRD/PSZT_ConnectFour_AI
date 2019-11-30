@@ -26,12 +26,9 @@ public class Main
 
         System.out.println("argument read correctly");
 
-        Controller game = new Controller(5, 7, aType, bType, minMaxDepth, enableAlfaBeta); //-astart +min, alfa
+        Controller game = new Controller(5, 8, aType, bType, minMaxDepth, enableAlfaBeta);
 
         System.out.println("game prepared");
-
-        // AI vs. AI
-        //Controller game = new Controller(7, 8, aStarts, bType, bType);
 
         try
         {
@@ -42,8 +39,6 @@ public class Main
             System.out.println("GOT AN EXCEPTION");
             e.printStackTrace();
         }
-
-
 
     }
 

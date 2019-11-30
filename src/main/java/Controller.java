@@ -20,19 +20,14 @@ public class Controller
     private int algorithmDepth;
     private boolean isAlfaBetaOn;
 
+    private GameWindow gameWindow;
 
-
-    public GameWindow gameWindow;
-    private int pickedColumn;
-
-    // nowa funkcja
-    GameBoard.PlayerType curPlayerNumber;
-    UserType curPlayerType;
-    UserType nextPlayerType;
-    AIEngine aiEngineFirst;
-    AIEngine aiEngineSecond;
-    int selectedColumn;
-    boolean gameOver;
+    private GameBoard.PlayerType curPlayerNumber;
+    private UserType curPlayerType;
+    private UserType nextPlayerType;
+    private AIEngine aiEngineFirst;
+    private AIEngine aiEngineSecond;
+    private boolean gameOver;
 
     public enum UserType
     {
@@ -99,6 +94,9 @@ public class Controller
 
 
         if(firstPlayerType == UserType.MACHINE && secondPlayerType == UserType.MACHINE) {
+
+            gameWindow.disableMouseListener();
+
             while(!gameBoard.getGameOver()) {
 
                 col = aiEngineSecond.getAiMove();
@@ -159,7 +157,7 @@ public class Controller
 
         if(gameBoard.getGameOver()) {
             System.out.println("Koniec gry");
-            gameWindow.disabled = true;
+            gameWindow.disableMouseListener();
             gameWindow.gameOver = true;
         }
 
@@ -173,8 +171,6 @@ public class Controller
     private boolean humanTurn() {
         return curPlayerType == UserType.HUMAN ;
     }
-
-
 
 }
 
