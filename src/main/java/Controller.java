@@ -112,6 +112,7 @@ public class Controller
                 aiEngineSecond.opponentMove(col);
             }
         }
+
     }
 
     public void onPickedColumn(int col) {
@@ -126,6 +127,8 @@ public class Controller
 
         if(humanTurn()) {
             simulateMove(col);
+
+            if(gameBoard.getGameOver()) return;
 
             if (nextPlayerType == UserType.MACHINE) {
                 switch (curPlayerNumber) {
@@ -154,13 +157,16 @@ public class Controller
 
         gameBoard.insertToken(x, curPlayerNumber);
 
-        gameWindow.refreshBoard(gameBoard);
-        gameWindow.display();
-
         if(gameBoard.getGameOver()) {
             System.out.println("Koniec gry");
             gameWindow.disabled = true;
+            gameWindow.gameOver = true;
         }
+
+        gameWindow.refreshBoard(gameBoard);
+        gameWindow.display();
+
+
         mCurTurn = !mCurTurn;
     }
 

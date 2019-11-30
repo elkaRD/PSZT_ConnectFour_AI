@@ -29,7 +29,7 @@ public class GameWindow extends JFrame implements MouseListener {
 
     private int[] xLeftSpotDim;
 
-    private boolean gameOver;
+    public boolean gameOver;
     String message;
     public int pressedX;
     public int pressedY;
@@ -71,6 +71,7 @@ public class GameWindow extends JFrame implements MouseListener {
     }
 
     public void paint(Graphics g) {
+        getContentPane().removeAll();
         Graphics2D g2 = (Graphics2D)g;
         drawBoard(g2);
         drawTokens(g2);
@@ -85,7 +86,7 @@ public class GameWindow extends JFrame implements MouseListener {
         g.setColor(Color.RED);
         g.setFont(myFont);
 
-        message = "Congratulations!" + message;
+        message = "Congratulations " + board.getWinner() + " !";
         FontRenderContext context = g.getFontRenderContext();
         Rectangle2D bounds = myFont.getStringBounds(message, context);
         g.drawString(message, (int)(WIDTH - bounds.getWidth())/2, (int)(HEIGHT - bounds.getHeight())/2);
@@ -210,6 +211,8 @@ public class GameWindow extends JFrame implements MouseListener {
 
         System.out.println("Kliknięto w  x = " + pressedX);
         System.out.println("Jest to kolumna nr : " + selectedColumn(pressedX));
+
+        if (pressedX <startX || selectedColumn(pressedX) >= board.WIDTH) return;
 
         controller.onPickedColumn(selectedColumn(pressedX));
     }
