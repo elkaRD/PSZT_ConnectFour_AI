@@ -102,7 +102,7 @@ public class Controller
 
     public void onPickedColumn(int col) {
 
-        if( curPlayerType == UserType.MACHINE || !gameBoard.checkSpaceForToken(col) ) {
+        if(!gameBoard.checkSpaceForToken(col) ) {
             return;
         }
 
@@ -128,10 +128,6 @@ public class Controller
                 }
             }
         }
-        else {
-            simulateMove(col);
-        }
-
     }
 
     private void simulateMove(int x) {

@@ -29,29 +29,23 @@ public class GameParams
 
         int argsNumber = args.length;
 
-        if (argsNumber == 0)
-        {
-            dialogWindowParams();
-            return;
-        }
-
-        if (argsNumber <= 1)
+        if (argsNumber >= 1)
             columns = Integer.parseInt(args[0]);
 
-        if (argsNumber <= 2)
+        if (argsNumber >= 2)
             rows = Integer.parseInt(args[1]);
 
-        if (argsNumber <= 3)
-            aType = Boolean.parseBoolean(args[0]) ? Controller.UserType.HUMAN : Controller.UserType.MACHINE;
+        if (argsNumber >= 3)
+            aType = Integer.parseInt(args[2]) != 0 ? Controller.UserType.HUMAN : Controller.UserType.MACHINE;
 
-        if (argsNumber <= 4)
-            bType = Boolean.parseBoolean(args[1]) ? Controller.UserType.HUMAN : Controller.UserType.MACHINE;
+        if (argsNumber >= 4)
+            bType = Integer.parseInt(args[3]) != 0  ? Controller.UserType.HUMAN : Controller.UserType.MACHINE;
 
-        if (argsNumber <= 5)
-            minMaxDepth1 = minMaxDepth2 = Integer.parseInt(args[2]);
+        if (argsNumber >= 5)
+            minMaxDepth1 = minMaxDepth2 = Integer.parseInt(args[4]);
 
-        if (argsNumber <= 6)
-            enableAlfaBeta1 = enableAlfaBeta2 = Boolean.parseBoolean(args[3]);
+        if (argsNumber >= 6)
+            enableAlfaBeta1 = enableAlfaBeta2 = Boolean.parseBoolean(args[5]);
 
         dialogWindowParams();
     }
