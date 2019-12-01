@@ -7,9 +7,9 @@ public class AIEngine
     public static final int INFINITY = 1000000000;
     public static final int CLOSER_VICTORY = 1000000;
 
-    public static final boolean ENABLE_ALPHA_BETA = true;
     public static final boolean ENABLE_SORTING_CHILDREN_WITHIN_NODE = true;
 
+    private final boolean ENABLE_ALPHA_BETA;
     private final int WIDTH;
     private final int HEIGHT;
 
@@ -46,8 +46,9 @@ public class AIEngine
         int value;
     }
 
-    public AIEngine(int width, int height, int depth, GameBoard.PlayerType myType)
+    public AIEngine(int width, int height, int depth, boolean enableAlphaBetaPruning, GameBoard.PlayerType myType)
     {
+        ENABLE_ALPHA_BETA = enableAlphaBetaPruning;
         WIDTH = width;
         HEIGHT = height;
 
@@ -56,7 +57,6 @@ public class AIEngine
         for(int i = 0; i<depth; ++i) {
             addAllMoves();
         }
-
     }
 
     public Node getNextNodeAlphaBeta(Node node, boolean isMax, int alpha, int beta)

@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 public class GameWindow extends JFrame implements MouseListener {
@@ -73,7 +74,10 @@ public class GameWindow extends JFrame implements MouseListener {
         drawBoard(g2);
         drawTokens(g2);
 
-        if(gameOver) drawMessage(g2);
+        if(gameOver) {
+            drawWinningLine(g2);
+            drawMessage(g2);
+        }
     }
 
     private void drawMessage(Graphics2D g) {
@@ -88,6 +92,20 @@ public class GameWindow extends JFrame implements MouseListener {
         g.drawString(message, (int)(WIDTH - bounds.getWidth())/2, (int)(HEIGHT - bounds.getHeight())/2);
     }
 
+    private void drawWinningLine(Graphics2D g)
+    {
+        GameBoard.BoardLine line = board.getWinningLine();
+
+        Stroke tempStroke = g.getStroke();
+
+        g.setStroke(new BasicStroke(10));
+        g.draw(new Line2D.Float(line.beg.x * spotSize + spotSize/2,
+                (board.HEIGHT - line.beg.y) * spotSize + spotSize/2,
+                line.end.x * spotSize + spotSize/2,
+                (board.HEIGHT - line.end.y) * spotSize + spotSize/2));
+
+        g.setStroke(tempStroke);
+    }
 
     private void calculateValues() {
         double ratioWin = (double)(WIDTH-screenOffsetX)/(HEIGHT-screenOffsetY);
@@ -160,6 +178,16 @@ public class GameWindow extends JFrame implements MouseListener {
 
             x = startX + spotSize/4;
             y += spotSize;
+        }
+
+        GameBoard.PointCoord lastMove = board.getLastMove();
+
+        if (lastMove.x >= 0) {
+            g.setColor(Color.red);
+            int selectionSize = spotSize/4;
+            int selectionX = startX + (int)(spotSize*0.375) + lastMove.x * spotSize;
+            int selectionY = startY + (int)(spotSize*0.375) - (lastMove.y-board.HEIGHT+1) * spotSize;
+            g.fillOval(selectionX, selectionY, selectionSize, selectionSize);
         }
     }
 

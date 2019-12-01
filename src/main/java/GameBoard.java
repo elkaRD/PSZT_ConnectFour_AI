@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class GameBoard
 {
     private final static int[] VALUE = {0, 1, 5, 10, 50, 100000, 100000};
@@ -14,6 +16,27 @@ public class GameBoard
 
     private boolean isWinningMove;
     private int numOfFreeSpots;
+
+    public class PointCoord
+    {
+        public int x = -1;
+        public int y = -1;
+
+        void set(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    public class BoardLine
+    {
+        PointCoord beg = new PointCoord();
+        PointCoord end = new PointCoord();
+    }
+
+    private PointCoord lastMove = new PointCoord();
+    private BoardLine winningLine = new BoardLine();
 
     public enum PlayerType
     {
@@ -59,8 +82,6 @@ public class GameBoard
         for (int i = 0; i < WIDTH; i++)
             for (int j =0; j < HEIGHT; j++)
                 board[i][j] = new Token(PlayerType.EMPTY);
-
-
     }
 
     public boolean getGameOver()
@@ -71,6 +92,16 @@ public class GameBoard
     public PlayerType getWinner()
     {
         return winner;
+    }
+
+    public PointCoord getLastMove()
+    {
+        return lastMove;
+    }
+
+    public BoardLine getWinningLine()
+    {
+        return winningLine;
     }
 
     public boolean checkSpaceForToken(int column)
@@ -100,6 +131,8 @@ public class GameBoard
             gameOver = true;
             winner = playerType;
         }
+
+        lastMove.set(x, y);
 
         return 0;
     }
@@ -250,6 +283,9 @@ public class GameBoard
     private boolean checkGameOverForDirection(int x, int y, PlayerType player, Direction dir)
     {
         int foundNear = 0;
+        BoardLine line = new BoardLine();
+        line.beg.set(x, y);
+        line.end.set(x, y);
 
         for (int i = 1; i < 4; i++)
         {
@@ -259,6 +295,8 @@ public class GameBoard
 
             if (board[hx][hy].player == player) foundNear++;
             else break;
+
+            line.beg.set(hx, hy);
         }
 
         for (int i = -1; i > -4; i--)
@@ -269,8 +307,17 @@ public class GameBoard
 
             if (board[hx][hy].player == player) foundNear++;
             else break;
+
+            line.end.set(hx, hy);
         }
-        return foundNear >= 3;
+
+        if (foundNear >= 3)
+        {
+            winningLine = line;
+            return true;
+        }
+
+        return false;
     }
 
     public void debugDisplay()

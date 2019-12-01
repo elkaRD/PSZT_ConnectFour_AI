@@ -1,14 +1,8 @@
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.Scanner;
-
 public class Controller
 {
     public final int WIDTH;
     public final int HEIGHT;
-
-    private Renderer mRenderer;
 
     private GameBoard gameBoard;
 
@@ -27,7 +21,6 @@ public class Controller
     private UserType nextPlayerType;
     private AIEngine aiEngineFirst;
     private AIEngine aiEngineSecond;
-    private boolean gameOver;
 
     public enum UserType
     {
@@ -40,11 +33,7 @@ public class Controller
         WIDTH = width;
         HEIGHT = height;
 
-        mRenderer = new Renderer(this);
-
         gameBoard = new GameBoard(WIDTH, HEIGHT);
-
-        //mRenderer.render();
 
         mCurTurn = true;
 
@@ -59,13 +48,11 @@ public class Controller
         aiEngineFirst = null;
         aiEngineSecond = null;
 
-        if(firstType == UserType.MACHINE) aiEngineFirst = new AIEngine(WIDTH, HEIGHT, algorithmDepth, GameBoard.PlayerType.PLAYER_A);
-        if(secondType == UserType.MACHINE) aiEngineSecond = new AIEngine(WIDTH, HEIGHT, algorithmDepth, GameBoard.PlayerType.PLAYER_B);
+        if(firstType == UserType.MACHINE) aiEngineFirst = new AIEngine(WIDTH, HEIGHT, algorithmDepth, isAlfaBetaOn, GameBoard.PlayerType.PLAYER_A);
+        if(secondType == UserType.MACHINE) aiEngineSecond = new AIEngine(WIDTH, HEIGHT, algorithmDepth, isAlfaBetaOn, GameBoard.PlayerType.PLAYER_B);
 
         curPlayerNumber = mCurTurn ? GameBoard.PlayerType.PLAYER_A : GameBoard.PlayerType.PLAYER_B;
         curPlayerType = mCurTurn ? firstPlayerType : secondPlayerType;
-        gameOver = false;
-
     }
 
     public GameBoard.PlayerType getPlayerType(int x, int y)
@@ -115,7 +102,7 @@ public class Controller
 
     public void onPickedColumn(int col) {
 
-        if( !gameBoard.checkSpaceForToken(col) ) {
+        if( curPlayerType == UserType.MACHINE || !gameBoard.checkSpaceForToken(col) ) {
             return;
         }
 
