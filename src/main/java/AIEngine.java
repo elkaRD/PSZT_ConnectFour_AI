@@ -7,13 +7,23 @@ public class AIEngine
     public static final int INFINITY = 1000000000;
     public static final int CLOSER_VICTORY = 1000000;
 
-    public static final boolean ENABLE_SORTING_CHILDREN_WITHIN_NODE = true;
+    public boolean ENABLE_SORTING_CHILDREN_WITHIN_NODE;
+    public boolean debugSortingA = true;
+    public boolean debugSortingB = true;
 
     private final boolean ENABLE_ALPHA_BETA;
     private final int WIDTH;
     private final int HEIGHT;
 
     private Node root;
+
+    private long debugCounterNodes = 0;
+    private long debugCounterLeaves = 0;
+    private long debugPruning = 0;
+    private long debugMovesCounter = 0;
+    private long debugCreatedNodes = 0;
+    private int debugDepth;
+    private long debugDuration = 0;
 
     public class Node
     {
@@ -48,6 +58,10 @@ public class AIEngine
 
     public AIEngine(int width, int height, int depth, boolean enableAlphaBetaPruning, GameBoard.PlayerType myType)
     {
+        ENABLE_SORTING_CHILDREN_WITHIN_NODE = myType == GameBoard.PlayerType.PLAYER_A ? debugSortingA : debugSortingB;
+
+        debugDepth = depth;
+
         ENABLE_ALPHA_BETA = enableAlphaBetaPruning;
         WIDTH = width;
         HEIGHT = height;
@@ -63,7 +77,13 @@ public class AIEngine
 
     public Node getNextNodeAlphaBeta(Node node, boolean isMax, int alpha, int beta)
     {
-        if (node.children.size() == 0) return node;
+        debugCounterNodes++;
+
+        if (node.children.size() == 0)
+        {
+            debugCounterLeaves++;
+            return node;
+        }
 
         Node bestNode = null;
 
@@ -90,6 +110,7 @@ public class AIEngine
 
             if (ENABLE_ALPHA_BETA && alpha >= beta)
             {
+                debugPruning++;
 //                System.out.println("ALPHA > BETA");
                 break;
             }
@@ -122,6 +143,8 @@ public class AIEngine
                 if (!node.board.checkSpaceForToken(i)) continue;
 
                 node.children.add(new Node(node, i, getSecondPlayer(node.playerType)));
+
+                debugCreatedNodes++;
             }
 
             if (ENABLE_SORTING_CHILDREN_WITHIN_NODE)
@@ -159,9 +182,16 @@ public class AIEngine
 
     public int getAiMove()
     {
+        debugMovesCounter++;
+
+        long start = System.nanoTime();
+
         Node bestMove = getNextNodeAlphaBeta(root, true, -INFINITY, INFINITY);
         //DebugUI.displayCurTree(this, 8);
         root = bestMove;
+
+        long elapsedTime = System.nanoTime() - start;
+        debugDuration += elapsedTime;
 
         System.out.println("Picked " + bestMove.move + "   with value " + bestMove.value);
 
@@ -187,5 +217,27 @@ public class AIEngine
                 return 0;
             }
         });
+    }
+
+    public void createReport()
+    {
+        debugCounterNodes /= debugMovesCounter;
+        debugCounterLeaves /= debugMovesCounter;
+        debugPruning /= debugMovesCounter;
+        debugCreatedNodes /= debugMovesCounter;
+
+        debugDuration /= 1e3;
+        debugDuration /= debugMovesCounter;
+
+        System.out.println("WIDTH: " + WIDTH);
+        System.out.println("DEPTH: " + debugDepth);
+        System.out.println("ALFA-BETA: " + ENABLE_ALPHA_BETA);
+        System.out.println("SORTING: " + ENABLE_SORTING_CHILDREN_WITHIN_NODE);
+        System.out.println("nodes: " + debugCounterNodes);
+        System.out.println("leaves: " + debugCounterLeaves);
+        System.out.println("pruning: " + debugPruning);
+        System.out.println("created: " + debugCreatedNodes);
+        System.out.println("moves: " + debugMovesCounter);
+        System.out.println("time: " + debugDuration);
     }
 }

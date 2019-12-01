@@ -96,6 +96,13 @@ public class Controller
                 simulateMove(col);
                 aiEngineSecond.opponentMove(col);
             }
+
+            String winner = gameBoard.getWinner() == GameBoard.PlayerType.PLAYER_A ? "first" : "second";
+            System.out.println(winner + " won");
+            System.out.println("first");
+            aiEngineFirst.createReport();
+            System.out.println("second");
+            aiEngineSecond.createReport();
         }
 
     }
