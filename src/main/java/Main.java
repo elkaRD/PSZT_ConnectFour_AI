@@ -33,8 +33,10 @@ public class Main
                 GameParams.getInstance().rows,
                 GameParams.getInstance().aType,
                 GameParams.getInstance().bType,
-                GameParams.getInstance().minMaxDepth,
-                GameParams.getInstance().enableAlfaBeta);
+                GameParams.getInstance().minMaxDepth1,
+                GameParams.getInstance().enableAlfaBeta1,
+                GameParams.getInstance().minMaxDepth2,
+                GameParams.getInstance().enableAlfaBeta2);
 
         System.out.println("game prepared");
 

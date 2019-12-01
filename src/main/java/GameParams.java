@@ -8,8 +8,10 @@ public class GameParams
     public Controller.UserType bType = Controller.UserType.MACHINE;
     public int columns = 7;
     public int rows = 8;
-    public int minMaxDepth = 4;
-    public boolean enableAlfaBeta = true;
+    public int minMaxDepth1 = 4;
+    public boolean enableAlfaBeta1 = true;
+    public int minMaxDepth2 = 4;
+    public boolean enableAlfaBeta2 = true;
 
     private static GameParams instance = new GameParams();
 
@@ -46,10 +48,10 @@ public class GameParams
             bType = Boolean.parseBoolean(args[1]) ? Controller.UserType.HUMAN : Controller.UserType.MACHINE;
 
         if (argsNumber <= 5)
-            minMaxDepth = Integer.parseInt(args[2]);
+            minMaxDepth1 = minMaxDepth2 = Integer.parseInt(args[2]);
 
         if (argsNumber <= 6)
-            enableAlfaBeta = Boolean.parseBoolean(args[3]);
+            enableAlfaBeta1 = enableAlfaBeta2 = Boolean.parseBoolean(args[3]);
 
         dialogWindowParams();
     }
@@ -59,7 +61,7 @@ public class GameParams
 
         System.out.println("Enter if alfa-beta algorithm should be enabled:\n(1 - enable, 0 - disable)");
 
-        enableAlfaBeta = (reader.nextInt()==1);
+        enableAlfaBeta1 = enableAlfaBeta2 = (reader.nextInt()==1);
     }
 
     private void enterAlgorithmMaxDepth() {
@@ -69,7 +71,7 @@ public class GameParams
 
         System.out.println("Enter max depth in MinMax algorithm: ");
 
-        minMaxDepth = reader.nextInt();
+        minMaxDepth1 = minMaxDepth2 = reader.nextInt();
     }
 
     private void enterPlayerBType() {
@@ -126,26 +128,33 @@ public class GameParams
     {
         JTextField fieldColumns = new JTextField();
         JTextField fieldRows = new JTextField();
-        JTextField fieldDepth = new JTextField();
-        JCheckBox fieldAlphaBeta = new JCheckBox("Enable alpha beta pruning");
         JCheckBox fieldAiFirst = new JCheckBox("1st player AI");
         JCheckBox fieldAiSecond = new JCheckBox("2nd player AI");
+        JTextField fieldDepth1 = new JTextField();
+        JCheckBox fieldAlphaBeta1 = new JCheckBox("Enable alpha beta pruning");
+        JTextField fieldDepth2 = new JTextField();
+        JCheckBox fieldAlphaBeta2 = new JCheckBox("Enable alpha beta pruning");
 
         fieldColumns.setText(Integer.toString(columns));
         fieldRows.setText(Integer.toString(rows));
-        fieldDepth.setText(Integer.toString(minMaxDepth));
-        fieldAlphaBeta.setSelected(enableAlfaBeta);
         fieldAiFirst.setSelected(aType == Controller.UserType.MACHINE);
         fieldAiSecond.setSelected(bType == Controller.UserType.MACHINE);
+        fieldDepth1.setText(Integer.toString(minMaxDepth1));
+        fieldAlphaBeta1.setSelected(enableAlfaBeta1);
+        fieldDepth2.setText(Integer.toString(minMaxDepth1));
+        fieldAlphaBeta2.setSelected(enableAlfaBeta1);
 
         final JComponent[] inputs = new JComponent[] {
                 new JLabel("Number of columns:"),
                 fieldColumns,
                 new JLabel("Number of rows:"),
                 fieldRows,
-                new JLabel("MinMax depth:"),
-                fieldDepth,
-                fieldAlphaBeta,
+                new JLabel("MinMax AI 1:"),
+                fieldDepth1,
+                fieldAlphaBeta1,
+                new JLabel("MinMax AI 2:"),
+                fieldDepth2,
+                fieldAlphaBeta2,
                 new JLabel("Players type:"),
                 fieldAiFirst,
                 fieldAiSecond
@@ -156,8 +165,10 @@ public class GameParams
         {
             columns = Integer.parseInt(fieldColumns.getText());
             rows = Integer.parseInt(fieldRows.getText());
-            minMaxDepth = Integer.parseInt(fieldDepth.getText());
-            enableAlfaBeta = fieldAlphaBeta.isSelected();
+            minMaxDepth1 = Integer.parseInt(fieldDepth1.getText());
+            enableAlfaBeta1 = fieldAlphaBeta1.isSelected();
+            minMaxDepth2 = Integer.parseInt(fieldDepth2.getText());
+            enableAlfaBeta2 = fieldAlphaBeta2.isSelected();
             aType = fieldAiFirst.isSelected()  ? Controller.UserType.MACHINE : Controller.UserType.HUMAN;
             bType = fieldAiSecond.isSelected() ? Controller.UserType.MACHINE : Controller.UserType.HUMAN;
         } else {

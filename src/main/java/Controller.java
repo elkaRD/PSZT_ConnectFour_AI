@@ -11,8 +11,8 @@ public class Controller
     private UserType firstPlayerType;
     private UserType secondPlayerType;
 
-    private int algorithmDepth;
-    private boolean isAlfaBetaOn;
+    //private int algorithmDepth;
+    //private boolean isAlfaBetaOn;
 
     private GameWindow gameWindow;
 
@@ -28,7 +28,7 @@ public class Controller
         HUMAN
     }
 
-    public Controller(int width, int height, UserType firstType, UserType secondType, int minMaxDepth, boolean alfaBetaOn)
+    public Controller(int width, int height, UserType firstType, UserType secondType, int minMaxDepth1, boolean alfaBetaOn1, int minMaxDepth2, boolean alfaBetaOn2)
     {
         WIDTH = width;
         HEIGHT = height;
@@ -40,16 +40,16 @@ public class Controller
         firstPlayerType = firstType;
         secondPlayerType = secondType;
 
-        algorithmDepth = minMaxDepth;
-        isAlfaBetaOn = alfaBetaOn;
+        //algorithmDepth = minMaxDepth;
+        //isAlfaBetaOn = alfaBetaOn;
 
         gameWindow = new GameWindow(gameBoard, this);
 
         aiEngineFirst = null;
         aiEngineSecond = null;
 
-        if(firstType == UserType.MACHINE) aiEngineFirst = new AIEngine(WIDTH, HEIGHT, algorithmDepth, isAlfaBetaOn, GameBoard.PlayerType.PLAYER_A);
-        if(secondType == UserType.MACHINE) aiEngineSecond = new AIEngine(WIDTH, HEIGHT, algorithmDepth, isAlfaBetaOn, GameBoard.PlayerType.PLAYER_B);
+        if(firstType == UserType.MACHINE) aiEngineFirst = new AIEngine(WIDTH, HEIGHT, minMaxDepth1, alfaBetaOn1, GameBoard.PlayerType.PLAYER_A);
+        if(secondType == UserType.MACHINE) aiEngineSecond = new AIEngine(WIDTH, HEIGHT, minMaxDepth2, alfaBetaOn2, GameBoard.PlayerType.PLAYER_B);
 
         curPlayerNumber = mCurTurn ? GameBoard.PlayerType.PLAYER_A : GameBoard.PlayerType.PLAYER_B;
         curPlayerType = mCurTurn ? firstPlayerType : secondPlayerType;
