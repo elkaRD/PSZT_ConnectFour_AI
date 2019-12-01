@@ -129,7 +129,6 @@ public class GameBoard
         if (checkGameOver(x, y, playerType))
         {
             gameOver = true;
-            winner = playerType;
         }
 
         lastMove.set(x, y);
@@ -270,10 +269,14 @@ public class GameBoard
 
     private boolean checkGameOver(int x, int y, PlayerType player)
     {
-        if (checkGameOverForDirection(x, y, player, Direction.HORIZONTAL)) return true;
-        if (checkGameOverForDirection(x, y, player, Direction.VERTICAL)) return true;
-        if (checkGameOverForDirection(x, y, player, Direction.DIAGONAL_DOWN)) return true;
-        if (checkGameOverForDirection(x, y, player, Direction.DIAGONAL_UP)) return true;
+        if (checkGameOverForDirection(x, y, player, Direction.HORIZONTAL) ||
+            checkGameOverForDirection(x, y, player, Direction.VERTICAL) ||
+            checkGameOverForDirection(x, y, player, Direction.DIAGONAL_DOWN) ||
+            checkGameOverForDirection(x, y, player, Direction.DIAGONAL_UP))
+        {
+            winner = player;
+            return true;
+        }
 
         if(numOfFreeSpots == 0) return true;
 

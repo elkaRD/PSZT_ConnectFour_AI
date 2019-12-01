@@ -86,7 +86,9 @@ public class GameWindow extends JFrame implements MouseListener {
         g.setColor(Color.RED);
         g.setFont(myFont);
 
-        message = "Congratulations " + board.getWinner() + " !";
+        if(board.getWinner() == GameBoard.PlayerType.EMPTY) message = "No Winner";
+        else message = "Congratulations " + board.getWinner() + " !";
+
         FontRenderContext context = g.getFontRenderContext();
         Rectangle2D bounds = myFont.getStringBounds(message, context);
         g.drawString(message, (int)(WIDTH - bounds.getWidth())/2, (int)(HEIGHT - bounds.getHeight())/2);
@@ -99,10 +101,10 @@ public class GameWindow extends JFrame implements MouseListener {
         Stroke tempStroke = g.getStroke();
 
         g.setStroke(new BasicStroke(10));
-        g.draw(new Line2D.Float(line.beg.x * spotSize + spotSize/2,
-                (board.HEIGHT - line.beg.y) * spotSize + spotSize/2,
-                line.end.x * spotSize + spotSize/2,
-                (board.HEIGHT - line.end.y) * spotSize + spotSize/2));
+        g.draw(new Line2D.Float(line.beg.x * spotSize + spotSize/2 + startX,
+                startY + (board.HEIGHT - line.beg.y - 1) * spotSize + spotSize/2,
+                line.end.x * spotSize + spotSize/2 + startX,
+                startY + (board.HEIGHT - line.end.y - 1) * spotSize + spotSize/2));
 
         g.setStroke(tempStroke);
     }
