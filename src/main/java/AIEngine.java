@@ -54,6 +54,8 @@ public class AIEngine
 
         root = new Node(myType);
 
+        if (myType == GameBoard.PlayerType.PLAYER_B) depth--;
+
         for(int i = 0; i<depth; ++i) {
             addAllMoves();
         }

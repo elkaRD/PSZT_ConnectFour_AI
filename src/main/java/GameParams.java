@@ -160,7 +160,7 @@ public class GameParams
                 fieldAiSecond
 
         };
-        int result = JOptionPane.showConfirmDialog(null, inputs, "My custom dialog", JOptionPane.PLAIN_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(null, inputs, "Connect four - settings", JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION)
         {
             columns = Integer.parseInt(fieldColumns.getText());
