@@ -18,14 +18,17 @@ public class Main
 
     public static void main(String[] args)
     {
-
-
-
         System.out.println("PSZT 19Z");
         System.out.println("Maria Jarek");
         System.out.println("Robert Dudzinski");
 
         GameParams.getInstance().readInputValues(args);
+
+        if (!GameParams.getInstance().checkParameters())
+        {
+            System.out.println("wrong arguments");
+            return;
+        }
 
         System.out.println("argument read correctly");
 

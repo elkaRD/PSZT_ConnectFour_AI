@@ -175,4 +175,12 @@ public class GameParams
             System.out.println("User canceled / closed the dialog, result = " + result);
         }
     }
+
+    public boolean checkParameters()
+    {
+        if (columns < 4 || rows < 4) return false;
+        if (minMaxDepth1 < 2 || minMaxDepth2 < 2) return false;
+
+        return true;
+    }
 }
