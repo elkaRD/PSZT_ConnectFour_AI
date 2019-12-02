@@ -100,7 +100,7 @@ public class Controller
 
     }
 
-    public void onPickedColumn(int col) {
+    public void onPickedColumn(final int col) {
 
         if(!gameBoard.checkSpaceForToken(col) ) {
             return;
@@ -111,26 +111,31 @@ public class Controller
         curPlayerType = mCurTurn ? firstPlayerType : secondPlayerType;
 
         if(humanTurn()) {
-            gameWindow.setWaitStatus(true);
 
             simulateMove(col);
 
             if(gameBoard.getGameOver()) return;
 
             if (nextPlayerType == UserType.MACHINE) {
-                switch (curPlayerNumber) {
-                    case PLAYER_A:
-                        aiEngineSecond.opponentMove(col);
-                        simulateMove(aiEngineSecond.getAiMove());
-                        break;
-                    case PLAYER_B:
-                        aiEngineFirst.opponentMove(col);
-                        simulateMove(aiEngineFirst.getAiMove());
-                        break;
-                }
-            }
+                new Thread(new Runnable() {
+                    public void run(){
+                        gameWindow.setWaitStatus(true);
 
-            gameWindow.setWaitStatus(false);
+                        switch (curPlayerNumber) {
+                            case PLAYER_A:
+                                aiEngineSecond.opponentMove(col);
+                                simulateMove(aiEngineSecond.getAiMove());
+                                break;
+                            case PLAYER_B:
+                                aiEngineFirst.opponentMove(col);
+                                simulateMove(aiEngineFirst.getAiMove());
+                                break;
+                        }
+
+                        gameWindow.setWaitStatus(false);
+                    }
+                }).start();
+            }
         }
     }
 

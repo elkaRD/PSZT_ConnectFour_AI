@@ -204,6 +204,8 @@ public class GameWindow extends JFrame implements MouseListener {
     }
 
     public void setWaitStatus(boolean wait) {
+        disabled = wait;
+
         if (wait) setTitle("WAIT - CALCULATING");
         else setTitle("");
     }
