@@ -111,6 +111,8 @@ public class Controller
         curPlayerType = mCurTurn ? firstPlayerType : secondPlayerType;
 
         if(humanTurn()) {
+            gameWindow.setWaitStatus(true);
+
             simulateMove(col);
 
             if(gameBoard.getGameOver()) return;
@@ -127,6 +129,8 @@ public class Controller
                         break;
                 }
             }
+
+            gameWindow.setWaitStatus(false);
         }
     }
 
@@ -144,9 +148,7 @@ public class Controller
             gameWindow.gameOver = true;
         }
 
-        gameWindow.refreshBoard(gameBoard);
         gameWindow.display();
-
 
         mCurTurn = !mCurTurn;
     }

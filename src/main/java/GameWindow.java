@@ -148,10 +148,6 @@ public class GameWindow extends JFrame implements MouseListener {
         }
     }
 
-    public void refreshBoard(GameBoard newGameBoard) {
-        board = newGameBoard;
-    }
-
     private void drawTokens(Graphics2D g) {
 
         int x = startX + spotSize/4;
@@ -205,6 +201,11 @@ public class GameWindow extends JFrame implements MouseListener {
         int col = (x-startX)/spotSize;
 
         return col;
+    }
+
+    public void setWaitStatus(boolean wait) {
+        if (wait) setTitle("WAIT - CALCULATING");
+        else setTitle("");
     }
 
     public void disableMouseListener() {
